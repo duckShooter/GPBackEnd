@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -44,7 +45,7 @@ public class Profile implements Serializable {
     
 	private String pictureURL;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
     private Set <Profile> Friends = new HashSet <Profile> () ;
     
 
@@ -113,4 +114,14 @@ public class Profile implements Serializable {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
+
+	public Set<Profile> getFriends() {
+		return Friends;
+	}
+
+	public void setFriends(Set<Profile> friends) {
+		Friends = friends;
+	}
+    
+    
 }

@@ -38,12 +38,26 @@ public class Services {
 			@FormParam("pass") String pass,@FormParam("type") String type) {
 		
 		UserController.AddUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
-		
-		
 		JSONObject json = new JSONObject();
 		json.put("operation", "Done");
 		return json.toJSONString();
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@POST
+	@Path("/addfriend")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String AddFriend(@FormParam("userid") int userId ,@FormParam("friendid") int friendId) {
+		
+		UserController.AddFriend(userId, friendId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	
+	
 	
 
 
