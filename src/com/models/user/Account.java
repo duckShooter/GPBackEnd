@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
  * @since 12/9/2016
  */
 @Entity
-public class Account implements Serializable {
+public class Account  {
 	
     private String password;
     @Id @GeneratedValue

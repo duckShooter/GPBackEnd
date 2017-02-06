@@ -1,6 +1,7 @@
 package com.models.user;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.Session;
 
@@ -52,6 +53,12 @@ public class UserController {
 		session.update(friend);
 		session.getTransaction().commit();
 		session.close() ;
+	}
+	
+	public static Set <Profile> GetFriends ( int userId ) {
+		Profile user = GetUser(userId) ;
+		return user.getFriends() ;
+		
 	}
 
 }

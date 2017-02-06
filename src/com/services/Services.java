@@ -1,6 +1,7 @@
 package com.services;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -9,8 +10,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.boon.json.JsonFactory;
+import org.boon.json.ObjectMapper;
 import org.hibernate.Session;
 import org.json.simple.JSONObject;
+
+import com.models.user.Profile;
 import com.models.user.UserController;
 
 @Path("/")
@@ -57,6 +62,17 @@ public class Services {
 	}
 	
 	
+	
+	@SuppressWarnings("unchecked")
+	@POST
+	@Path("/getfriends")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String GetFriends(@FormParam("userid") int userId) {
+		Set <Profile> friends = UserController.GetFriends(userId);
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.writeValueAsString(friends);
+		return jsonString ;
+	}
 	
 	
 

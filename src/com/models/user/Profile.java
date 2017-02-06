@@ -1,6 +1,6 @@
 package com.models.user;
 
-import java.io.Serializable;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,21 +19,21 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.boon.json.annotations.JsonIgnore;
+import org.boon.json.annotations.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+@JsonIgnoreProperties ("Friends")
 @Entity
-public class Profile implements Serializable {
-	
-	
+public class Profile  {
+	@JsonIgnore
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
 	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = { @Parameter(value = "account", name = "property") })
 	private int User_Id ;
-	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "User_Id")
 	private Account account = new Account() ;
-    
 	private String firstName;
     private String lastName;
     private String email;
@@ -46,6 +46,7 @@ public class Profile implements Serializable {
 	private String pictureURL;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
+	//@JsonIgnore
     private Set <Profile> Friends = new HashSet <Profile> () ;
     
 
