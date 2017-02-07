@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 
 import org.boon.json.annotations.JsonIgnore;
 import org.boon.json.annotations.JsonIgnoreProperties;
+import org.boon.json.annotations.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -29,7 +30,7 @@ import org.hibernate.annotations.Parameter;
 public class Profile  {
 	@JsonIgnore
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
-	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = { @Parameter(value = "account", name = "property") })
+	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = {@Parameter(value = "account", name = "property") })
 	private int User_Id ;
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "User_Id")
@@ -46,8 +47,8 @@ public class Profile  {
 	private String pictureURL;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	//@JsonIgnore
-    private Set <Profile> Friends = new HashSet <Profile> () ;
+	@JsonIgnore
+    private Set<Profile> Friends = new HashSet<Profile> () ;
     
 
 	public Account getAccount() {
@@ -57,7 +58,6 @@ public class Profile  {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-
 
     public String getFirstName() {
         return firstName;
@@ -115,14 +115,14 @@ public class Profile  {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
-
+    
+    @JsonIgnore
 	public Set<Profile> getFriends() {
 		return Friends;
 	}
-
+    
+    @JsonIgnore
 	public void setFriends(Set<Profile> friends) {
 		Friends = friends;
 	}
-    
-    
 }

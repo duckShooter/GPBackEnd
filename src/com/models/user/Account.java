@@ -9,13 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-/**
- * @author Andrew Albert
- * @version 1.0
- * @since 12/9/2016
- */
 @Entity
-public class Account  {
+public class Account {
 	
     private String password;
     @Id @GeneratedValue

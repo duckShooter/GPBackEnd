@@ -42,7 +42,7 @@ public class Services {
 			@FormParam("birthday") String birthday,@FormParam("pictureURL") String pictureURL,
 			@FormParam("pass") String pass,@FormParam("type") String type) {
 		
-		UserController.AddUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
+		UserController.addUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
 		JSONObject json = new JSONObject();
 		json.put("operation", "Done");
 		return json.toJSONString();
@@ -55,7 +55,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String AddFriend(@FormParam("userid") int userId ,@FormParam("friendid") int friendId) {
 		
-		UserController.AddFriend(userId, friendId);
+		UserController.addFriend(userId, friendId);
 		JSONObject json = new JSONObject();
 		json.put("operation", "Done");
 		return json.toJSONString();
@@ -68,7 +68,7 @@ public class Services {
 	@Path("/getfriends")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetFriends(@FormParam("userid") int userId) {
-		Set <Profile> friends = UserController.GetFriends(userId);
+		Set <Profile> friends = UserController.getFriends(userId);
 		ObjectMapper mapper = JsonFactory.create();
 		String jsonString = mapper.writeValueAsString(friends);
 		return jsonString ;
