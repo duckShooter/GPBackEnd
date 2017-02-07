@@ -31,6 +31,7 @@ public class Profile  {
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
 	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = { @Parameter(value = "account", name = "property") })
 	private int User_Id ;
+	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "User_Id")
 	private Account account = new Account() ;
@@ -46,7 +47,7 @@ public class Profile  {
 	private String pictureURL;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	//@JsonIgnore
+	@JsonIgnore
     private Set <Profile> Friends = new HashSet <Profile> () ;
     
 
@@ -116,10 +117,12 @@ public class Profile  {
         this.pictureURL = pictureURL;
     }
 
+    @JsonIgnore
 	public Set<Profile> getFriends() {
 		return Friends;
 	}
 
+    @JsonIgnore
 	public void setFriends(Set<Profile> friends) {
 		Friends = friends;
 	}

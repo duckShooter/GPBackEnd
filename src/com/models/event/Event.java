@@ -6,18 +6,23 @@ import com.models.user.Profile;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javax.persistence.Entity;
+
 /**
  * @author Andrew
  * @since 25/1/2017
  * @version 1.0
  */
 
+
+@Entity
 public class Event {
     private String name;
     private String description;
     private String imageURL;
     private Location location;
     private double radius;
+    
     private ArrayList<Profile> users;
     private Timestamp dateOfEvent;
     private Timestamp deadline; //what is this ??
