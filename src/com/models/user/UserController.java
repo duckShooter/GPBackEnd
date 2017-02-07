@@ -5,15 +5,15 @@ import java.util.Set;
 
 import org.hibernate.Session;
 
-import com.services.DBConnection;
+import com.services.HibernateUtility;
 
 public class UserController {
 	
-	public static void AddUser (String firstName , String lastName , String email , 
+	public static void addUser (String firstName , String lastName , String email , 
 			String homeTown , String name , String birthday , String pictureURL , 
 			String password , String type ) {
 		
-		Profile profile = new Profile() ;
+		Profile profile = new Profile() ; //Set up a Profile object
 		profile.setFirstName(firstName);
 		profile.setLastName(lastName);
 		profile.setEmail(email);
@@ -21,20 +21,21 @@ public class UserController {
 		profile.setName(name);
 		profile.setPictureURL(pictureURL);
 		profile.setBirthday(birthday);
-		Account account = new Account() ;
+		
+		Account account = new Account(); //Set up an Account object
 		account.setPassword(password);
 		account.setType(type);
 		profile.setAccount(account);
-		Session session = DBConnection.Connection() ;
+		
+		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.save(profile);
 		session.getTransaction().commit();
-		session.close() ;
-		
+		session.close();
 	}
 	
-	public static Profile GetUser (int userId) {
-		Session session = DBConnection.Connection() ;
+	public static Profile getUser (int userId) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		Profile profile = (Profile)session.get(Profile.class, userId) ;
 		session.getTransaction().commit();
@@ -42,11 +43,11 @@ public class UserController {
 		return profile ;
 	}
 	
-	public static void AddFriend (int userId , int friendId ) {
-		Session session = DBConnection.Connection() ;
+	public static void addFriend (int userId, int friendId) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
-		Profile user = GetUser(userId) ;
-		Profile friend = GetUser(friendId) ;
+		Profile user = getUser(userId) ;
+		Profile friend = getUser(friendId) ;
 		(user.getFriends()).add(friend) ;
 		(friend.getFriends()).add(user) ;
 		session.update(user);
@@ -55,10 +56,9 @@ public class UserController {
 		session.close() ;
 	}
 	
-	public static Set <Profile> GetFriends ( int userId ) {
-		Profile user = GetUser(userId) ;
+	public static Set <Profile> getFriends ( int userId ) {
+		Profile user = getUser(userId) ;
 		return user.getFriends() ;
-		
 	}
 
 }

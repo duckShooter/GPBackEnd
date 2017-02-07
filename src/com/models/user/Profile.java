@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 
 import org.boon.json.annotations.JsonIgnore;
 import org.boon.json.annotations.JsonIgnoreProperties;
+import org.boon.json.annotations.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -29,7 +30,7 @@ import org.hibernate.annotations.Parameter;
 public class Profile  {
 	@JsonIgnore
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
-	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = { @Parameter(value = "account", name = "property") })
+	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = {@Parameter(value = "account", name = "property") })
 	private int User_Id ;
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
@@ -48,7 +49,11 @@ public class Profile  {
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
+<<<<<<< HEAD
     private Set <Profile> Friends = new HashSet <Profile> () ;
+=======
+    private Set<Profile> Friends = new HashSet<Profile> () ;
+>>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
     
 
 	public Account getAccount() {
@@ -58,7 +63,6 @@ public class Profile  {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-
 
     public String getFirstName() {
         return firstName;
@@ -116,16 +120,22 @@ public class Profile  {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
     @JsonIgnore
 	public Set<Profile> getFriends() {
 		return Friends;
 	}
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
     @JsonIgnore
 	public void setFriends(Set<Profile> friends) {
 		Friends = friends;
 	}
-    
-    
 }
