@@ -1,21 +1,16 @@
 package com.models.event;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-
-
-
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import com.models.location.LocationController;
 import com.models.user.Profile;
 import com.models.user.UserController;
 import com.services.HibernateUtility;
 
-public class EventController {
-	
+public class EventController {	
 	public static void createEvent (String name , String description , double radius 
 			, int userId , String dateOfEvent ,  String deadline , boolean state , int locationId ) {
 		
