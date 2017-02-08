@@ -1,11 +1,10 @@
 package com.models.user;
 
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,16 +15,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+
+
+
+
 
 import org.boon.json.annotations.JsonIgnore;
-import org.boon.json.annotations.JsonIgnoreProperties;
-import org.boon.json.annotations.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-@JsonIgnoreProperties ("Friends")
+import com.models.event.Event;
+
 @Entity
 public class Profile  {
 	@JsonIgnore
@@ -36,6 +37,15 @@ public class Profile  {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "User_Id")
 	private Account account = new Account() ;
+	
+	@JsonIgnore
+	@OneToMany (cascade = CascadeType.ALL , mappedBy = "owner")
+	private List <Event> eventsWhoOwn = new ArrayList <Event> () ;
+	
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL , mappedBy = "users")
+	private List <Event> events = new ArrayList <Event> () ;	
+	
 	private String firstName;
     private String lastName;
     private String email;
@@ -49,11 +59,8 @@ public class Profile  {
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
-<<<<<<< HEAD
-    private Set <Profile> Friends = new HashSet <Profile> () ;
-=======
-    private Set<Profile> Friends = new HashSet<Profile> () ;
->>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
+	private Set <Profile> Friends = new HashSet <Profile> () ;
+
     
 
 	public Account getAccount() {
@@ -120,22 +127,35 @@ public class Profile  {
     public void setPictureURL(String pictureURL) {
         this.pictureURL = pictureURL;
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
     @JsonIgnore
 	public Set<Profile> getFriends() {
 		return Friends;
 	}
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 08b5c9be2f652ee2930823d3b8c795a772aa4e67
     @JsonIgnore
 	public void setFriends(Set<Profile> friends) {
 		Friends = friends;
 	}
+    @JsonIgnore
+	public List<Event> getEvents() {
+		return events;
+	}
+	@JsonIgnore
+	public void setEvents(List<Event> events) {
+		this.events = events;
+	}
+	@JsonIgnore
+	public List<Event> getEventsWhoOwn() {
+		return eventsWhoOwn;
+	}
+	@JsonIgnore
+	public void setEventsWhoOwn(List<Event> eventsWhoOwn) {
+		this.eventsWhoOwn = eventsWhoOwn;
+	}
+
+	
+	
+    
+    
 }

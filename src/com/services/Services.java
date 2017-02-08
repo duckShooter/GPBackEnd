@@ -1,10 +1,10 @@
 package com.services;
 
-import java.util.Date;
+
+import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -12,9 +12,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
-import org.hibernate.Session;
 import org.json.simple.JSONObject;
 
+import com.models.event.EventController;
+import com.models.location.LocationController;
 import com.models.user.Profile;
 import com.models.user.UserController;
 
@@ -48,7 +49,6 @@ public class Services {
 		return json.toJSONString();
 	}
 	
-	
 	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/addfriend")
@@ -61,9 +61,6 @@ public class Services {
 		return json.toJSONString();
 	}
 	
-	
-	
-	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/getfriends")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -73,6 +70,57 @@ public class Services {
 		String jsonString = mapper.writeValueAsString(friends);
 		return jsonString ;
 	}
+	
+	@POST
+	@Path("/createevent")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String createEvent(@FormParam("name")String name , @FormParam("description")String description , @FormParam("radius") double radius 
+			, @FormParam("userid") int userId ,@FormParam("dateofevent") String dateOfEvent ,  @FormParam("deadline") String deadline , @FormParam("state") boolean state ,@FormParam("locationid") int locationId  ) {
+		EventController.createEvent ( name ,  description ,  radius 
+				,  userId ,  dateOfEvent ,   deadline ,  state ,  locationId ) ; 
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+		
+	@POST
+	@Path("/createlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String createLocation (@FormParam("longitude")double longitude , @FormParam("latitude")double latitude ,@FormParam("name") String name) {
+		LocationController.createLocation ( longitude ,  latitude ,  name);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getownersevent")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getOwnersEvent (@FormParam("ownerid")int ownerId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getEventsWhoOwn(ownerId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/addusertoevent")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addUserToEvent (@FormParam("userid")int userId , @FormParam("eventid")int eventId) {
+		EventController.addUserToEvent(userId, eventId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getuserevents")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserEvent (@FormParam("userid")int userId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getEvents(userId));
+		return jsonString ;
+	}
+	
 	
 	
 

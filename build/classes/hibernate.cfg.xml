@@ -16,7 +16,7 @@
         <property name="connection.password">1k8gKuh2Lzzx</property> -->
         
         <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">1</property>
+        <property name="connection.pool_size">10</property>
       
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -32,6 +32,8 @@
  
         <!-- Mapping -->
  		<mapping class="com.models.user.Account"/>
- 		<mapping class="com.models.user.Profile"/> 
+ 		<mapping class="com.models.user.Profile"/>
+ 		<mapping class="com.models.location.Location"/> 
+ 		<mapping class="com.models.event.Event"/>  
     </session-factory>
 </hibernate-configuration>

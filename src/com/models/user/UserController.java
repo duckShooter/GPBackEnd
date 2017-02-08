@@ -1,10 +1,11 @@
 package com.models.user;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
 
+import com.models.event.Event;
 import com.services.HibernateUtility;
 
 public class UserController {
@@ -59,6 +60,16 @@ public class UserController {
 	public static Set <Profile> getFriends ( int userId ) {
 		Profile user = getUser(userId) ;
 		return user.getFriends() ;
+	}
+	
+	public static List <Event> getEvents ( int userId ) {
+		Profile user = getUser(userId) ;
+		return user.getEvents() ;
+	}
+	
+	public static List <Event> getEventsWhoOwn ( int userId) {
+		Profile user = getUser(userId) ;
+		return user.getEventsWhoOwn();
 	}
 
 }
