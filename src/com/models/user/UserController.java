@@ -10,7 +10,7 @@ import com.services.HibernateUtility;
 
 public class UserController {
 	
-	public static void addUser (String firstName , String lastName , String email , 
+	public static Profile addUser (String firstName , String lastName , String email , 
 			String homeTown , String name , String birthday , String pictureURL , 
 			String password , String type ) {
 		
@@ -33,6 +33,8 @@ public class UserController {
 		session.save(profile);
 		session.getTransaction().commit();
 		session.close();
+		
+		return profile ;
 	}
 	
 	public static Profile getUser (int userId) {

@@ -12,7 +12,9 @@ import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
 import org.json.simple.JSONObject;
 
+import com.models.event.Event;
 import com.models.event.EventController;
+import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.user.Profile;
 import com.models.user.UserController;
@@ -41,10 +43,10 @@ public class Services {
 			@FormParam("birthday") String birthday,@FormParam("pictureURL") String pictureURL,
 			@FormParam("pass") String pass,@FormParam("type") String type) {
 		
-		UserController.addUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
-		JSONObject json = new JSONObject();
-		json.put("operation", "Done");
-		return json.toJSONString();
+		Profile profile = UserController.addUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(profile);
+		return jsonString ;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -73,22 +75,23 @@ public class Services {
 	@Path("/createevent")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String createEvent(@FormParam("name")String name , @FormParam("description")String description , @FormParam("radius") double radius 
-			, @FormParam("userid") int userId ,@FormParam("dateofevent") String dateOfEvent ,  @FormParam("deadline") String deadline , @FormParam("state") boolean state ,@FormParam("locationid") int locationId  ) {
-		EventController.createEvent ( name ,  description ,  radius 
-				,  userId ,  dateOfEvent ,   deadline ,  state ,  locationId ) ; 
-		JSONObject json = new JSONObject();
-		json.put("operation", "Done");
-		return json.toJSONString();
+			, @FormParam("userid") int userId ,@FormParam("dateofevent") String dateOfEvent ,  @FormParam("deadline") String deadline 
+			, @FormParam("imageurl") String imageURL , @FormParam("state") boolean state ,@FormParam("locationid") int locationId  ) {
+		Event event = EventController.createEvent ( name ,  description ,  radius 
+				,  userId ,  dateOfEvent ,   deadline , imageURL ,  state ,  locationId ) ; 
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(event);
+		return jsonString ;
 	}
 		
 	@POST
 	@Path("/createlocation")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String createLocation (@FormParam("longitude")double longitude , @FormParam("latitude")double latitude ,@FormParam("name") String name) {
-		LocationController.createLocation ( longitude ,  latitude ,  name);
-		JSONObject json = new JSONObject();
-		json.put("operation", "Done");
-		return json.toJSONString();
+		Location location = LocationController.createLocation ( longitude ,  latitude ,  name);
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(location);
+		return jsonString ;
 	}
 	
 	@POST

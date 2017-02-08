@@ -22,7 +22,7 @@ import com.models.event.Event;
 
 @Entity
 public class Profile  {
-	@JsonIgnore
+	
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
 	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = {@Parameter(value = "account", name = "property") })
 	private int User_Id ;

@@ -7,13 +7,14 @@ import com.services.HibernateUtility;
 
 public class LocationController {
 	
-	public static void createLocation (double longitude , double latitude , String name) {
+	public static Location createLocation (double longitude , double latitude , String name) {
 		Location location = new Location(longitude, latitude, name) ;
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.save(location);
 		session.getTransaction().commit();
 		session.close();
+		return location ;
 	}
 	
 	public static Location getLocation (int locationId) {

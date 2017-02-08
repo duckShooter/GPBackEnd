@@ -11,8 +11,8 @@ import com.models.user.UserController;
 import com.services.HibernateUtility;
 
 public class EventController {	
-	public static void createEvent (String name , String description , double radius 
-			, int userId , String dateOfEvent ,  String deadline , boolean state , int locationId ) {
+	public static Event createEvent (String name , String description , double radius 
+			, int userId , String dateOfEvent ,  String deadline  , String imageURL , boolean state , int locationId ) {
 		
 		Event event = new Event() ;
 		event.setName(name);
@@ -23,14 +23,16 @@ public class EventController {
 		event.setDateOfEvent(dateOfEvent);
 		event.setDeadline(deadline);
 		event.setState(state);
+		event.setImageURL(imageURL);
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.save(event);
 		session.getTransaction().commit();
-		session.close();	
+		session.close();
+		return event ;
 	}
 	
-	public static List <Event> getOwnersEvents (int ownerId) {
+	/*public static List <Event> getOwnersEvents (int ownerId) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		Query query = session.createQuery("from Event where owner_id = :ownerId ");
@@ -38,7 +40,7 @@ public class EventController {
 		List list = query.list();
 		session.close();
 		return list ;
-	}
+	}*/
 	
 	public static Event getEvent (int eventId) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
