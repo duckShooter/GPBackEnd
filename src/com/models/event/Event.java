@@ -34,7 +34,7 @@ public class Event {
     private String description;
     private String imageURL;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "location_id")
     private Location location;
     private double radius;

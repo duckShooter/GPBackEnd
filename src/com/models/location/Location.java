@@ -1,8 +1,12 @@
 package com.models.location;
 
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import org.boon.json.annotations.JsonIgnore;
 
 /**
  * @author Andrew
@@ -18,6 +22,10 @@ public class Location {
     private double longitude;
     private double latitude;
     private String name;
+    
+    @JsonIgnore
+    @OneToOne(mappedBy = "location")
+    private Area area ;
 
     public Location(){
         this.longitude = 0.0;
@@ -53,4 +61,14 @@ public class Location {
     public void setName(String name) {
         this.name = name;
     }
+
+	public Area getArea() {
+		return area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+    
+    
 }

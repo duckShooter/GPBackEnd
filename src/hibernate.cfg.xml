@@ -6,12 +6,12 @@
 <hibernate-configuration>
     <session-factory>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-       <!--   <property name="connection.url">jdbc:mysql://localhost:3306/restapi</property>
+       <!-- <property name="connection.url">jdbc:mysql://localhost:3306/restapi</property>
         <property name="connection.username">root</property>
         <property name="connection.password">root</property>-->
         <property name="hibernate.enable_lazy_load_no_trans">true</property>
         
-           <property name="connection.url">jdbc:mysql://127.3.240.2:3306/restapi</property>
+        <property name="connection.url">jdbc:mysql://127.3.240.2:3306/restapi</property>
         <property name="connection.username">adminG8bkbae </property>
         <property name="connection.password">1k8gKuh2Lzzx</property> 
         
@@ -34,6 +34,7 @@
  		<mapping class="com.models.user.Account"/>
  		<mapping class="com.models.user.Profile"/>
  		<mapping class="com.models.location.Location"/> 
+ 		<mapping class="com.models.location.Area"/> 
  		<mapping class="com.models.event.Event"/>  
     </session-factory>
 </hibernate-configuration>

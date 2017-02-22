@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 
 import com.models.event.Event;
 import com.models.event.EventController;
+import com.models.location.Area;
 import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.user.Profile;
@@ -123,6 +124,36 @@ public class Services {
 	}
 	
 	
+	@POST
+	@Path("/createarea")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String createArea (@FormParam("ownerid")int ownerId,@FormParam("locationid")int locationId
+			,@FormParam("redius")double redius) {
+		Area area = LocationController.createArea(redius, ownerId, locationId) ;
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(area);
+		return jsonString ;
+		
+	}
 	
 
+	@POST
+	@Path("/addusertoarea")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addUserToArea (@FormParam("userid")int userId,@FormParam("areaid")int areaId) {
+	  LocationController.addUserToArae(userId, areaId);
+	  JSONObject json = new JSONObject();
+	  json.put("operation", "Done");
+	  return json.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/getuserareas")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserAreas (@FormParam("userid")int userId) {
+	  ObjectMapper mapper = JsonFactory.create();
+	  String jsonString = mapper.toJson(UserController.getAreas(userId));
+	  return jsonString ;
+	}
 }

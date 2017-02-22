@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hibernate.Session;
 
 import com.models.event.Event;
+import com.models.location.Area;
 import com.services.HibernateUtility;
 
 public class UserController {
@@ -73,5 +74,16 @@ public class UserController {
 		Profile user = getUser(userId) ;
 		return user.getEventsWhoOwn();
 	}
+	
+	public static List <Area> getAreas ( int userId ) {
+		Profile user = getUser(userId) ;
+		return user.getAreas() ;
+	}
+	
+	public static List <Area> getAreasWhoOwn ( int userId ) {
+		Profile user = getUser(userId) ;
+		return user.getAreasWhoOwn() ;
+	}
+	
 
 }

@@ -19,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.models.event.Event;
+import com.models.location.Area;
 
 @Entity
 public class Profile  {
@@ -54,7 +55,13 @@ public class Profile  {
 	@JsonIgnore
 	private Set <Profile> Friends = new HashSet <Profile> () ;
 
-    
+	@JsonIgnore
+	@OneToMany (cascade = CascadeType.ALL,mappedBy = "owner")
+    private List <Area> areasWhoOwn = new ArrayList<Area> () ;
+	
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL , mappedBy = "users")
+	private List <Area> areas = new ArrayList<Area> () ;
 
 	public Account getAccount() {
 		return account;
@@ -147,8 +154,23 @@ public class Profile  {
 		this.eventsWhoOwn = eventsWhoOwn;
 	}
 
-	
-	
-    
-    
+	@JsonIgnore
+	public List<Area> getAreasWhoOwn() {
+		return areasWhoOwn;
+	}
+
+	@JsonIgnore
+	public void setAreasWhoOwn(List<Area> areasWhoOwn) {
+		this.areasWhoOwn = areasWhoOwn;
+	}
+
+	@JsonIgnore
+	public List<Area> getAreas() {
+		return areas;
+	}
+
+	@JsonIgnore
+	public void setAreas(List<Area> areas) {
+		this.areas = areas;
+	} 
 }
