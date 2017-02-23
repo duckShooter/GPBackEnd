@@ -35,7 +35,8 @@ public class Area {
 					nullable = false, updatable = false) })
 	private List <Profile> users = new ArrayList <Profile> () ;
 	
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(name = "location_id", nullable = false)
 	private Location location ;
 	
 	

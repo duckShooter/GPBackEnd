@@ -1,9 +1,13 @@
 package com.models.location;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.boon.json.annotations.JsonIgnore;
@@ -24,8 +28,9 @@ public class Location {
     private String name;
     
     @JsonIgnore
-    @OneToOne(mappedBy = "location")
-    private Area area ;
+   // @OneToOne(mappedBy = "location")
+    @OneToMany (mappedBy="location")
+    private List <Area> areas = new ArrayList <Area> () ;
 
     public Location(){
         this.longitude = 0.0;
@@ -62,13 +67,17 @@ public class Location {
         this.name = name;
     }
 
-	public Area getArea() {
-		return area;
+    @JsonIgnore
+    public List<Area> getAreas() {
+		return areas;
 	}
 
-	public void setArea(Area area) {
-		this.area = area;
+	@JsonIgnore
+	public void setAreas(List<Area> areas) {
+		this.areas = areas;
 	}
+
+    
     
     
 }
