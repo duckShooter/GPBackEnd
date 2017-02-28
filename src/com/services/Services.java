@@ -1,5 +1,6 @@
 package com.services;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.FormParam;
@@ -66,7 +67,7 @@ public class Services {
 	@Path("/getfriends")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetFriends(@FormParam("userid") int userId) {
-		Set <Profile> friends = UserController.getFriends(userId);
+		List <Profile> friends = UserController.getFriends(userId);
 		ObjectMapper mapper = JsonFactory.create();
 		String jsonString = mapper.writeValueAsString(friends);
 		return jsonString ;
@@ -122,8 +123,7 @@ public class Services {
 		String jsonString = mapper.toJson(UserController.getEvents(userId));
 		return jsonString ;
 	}
-	
-	
+		
 	@POST
 	@Path("/createarea")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -136,7 +136,6 @@ public class Services {
 		
 	}
 	
-
 	@POST
 	@Path("/addusertoarea")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -147,7 +146,6 @@ public class Services {
 	  return json.toJSONString();
 	}
 	
-	
 	@POST
 	@Path("/getuserareas")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -156,4 +154,55 @@ public class Services {
 	  String jsonString = mapper.toJson(UserController.getAreas(userId));
 	  return jsonString ;
 	}
+	
+	@POST
+	@Path("/adduserlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addUserLocation (@FormParam("userid")int userId , @FormParam("locationid")int locationId
+			, @FormParam("time")String time) {
+		UserController.addUserLocation(userId, locationId, time);
+		 JSONObject json = new JSONObject();
+		  json.put("operation", "Done");
+		  return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/userlastlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserLastLocation (@FormParam("userid")int userId ) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getUserLastLocation(userId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getfriendsonmap")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFriendsOnMap (@FormParam("userid")int userId ,@FormParam("lon1") double lon1 ,@FormParam("lat1")double lat1 ,@FormParam("lon2") double lon2 ,@FormParam("lat2")double lat2
+			,@FormParam("lon3") double lon3 ,@FormParam("lat3") double lat3 ,@FormParam("lon4") double lon4 ,@FormParam("lat4") double lat4) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getFriendsOnMap(userId, lon1, lat1, lon2, lat2, lon3, lat3, lon4, lat4));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getnearbyevents")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getNearbyEvents (@FormParam("userid")int userId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getNearbyEvents(userId));
+		return jsonString ;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

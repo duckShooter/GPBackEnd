@@ -3,7 +3,9 @@ package com.models.event;
 import com.models.location.Location;
 import com.models.user.Profile;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,15 +20,9 @@ import javax.persistence.OneToOne;
 
 import org.boon.json.annotations.JsonIgnore;
 
-/**
- * @author Andrew
- * @since 25/1/2017
- * @version 1.0
- */
-
 
 @Entity
-public class Event {
+public class Event  implements Comparable <Event>{
 	@Id
 	@GeneratedValue
 	private int event_id;
@@ -39,21 +35,23 @@ public class Event {
     private Location location;
     private double radius;
     
+    private String dateOfEvent;
+    private String deadline; //what is this ??
+    private boolean state;
     
+    @JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "owner_id")
     private Profile owner ;
 	
-	
+    @JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "profile_event", joinColumns = {
 			@JoinColumn(name = "event_id", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "user_id",
 					nullable = false, updatable = false) })
     private List<Profile> users = new ArrayList <Profile> ();
-    private String dateOfEvent;
-    private String deadline; //what is this ??
-    private boolean state;
+
 
     public Event(){
         imageURL = null;
@@ -106,12 +104,12 @@ public class Event {
         this.radius = radius;
     }
 
-    
+    @JsonIgnore
     public List<Profile> getUsers() {
         return users;
     }
 
-  
+    @JsonIgnore
     public void setUsers(List<Profile> users) {
         this.users = users;
     }
@@ -139,4 +137,18 @@ public class Event {
     public void setState(boolean state) {
         this.state = state;
     }
+    
+	@Override
+	public int compareTo(Event event) {
+		Timestamp time1 = Timestamp.valueOf(deadline) ;
+		Timestamp time2 = Timestamp.valueOf(event.deadline) ;
+		return time1.compareTo(time2) ;
+	}
+	
+	/*public static Comparator<Event> EventTimeComparator
+     	= new Comparator<Event>() {
+			public int compare(Event event1, Event event2) {
+			return event1.compareTo(event2);
+		}
+		};*/
 }

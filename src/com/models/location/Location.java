@@ -12,12 +12,6 @@ import javax.persistence.OneToOne;
 
 import org.boon.json.annotations.JsonIgnore;
 
-/**
- * @author Andrew
- * @version 1.0
- * @since 25/1/2017
- */
-
 @Entity
 public class Location {
 	@Id
