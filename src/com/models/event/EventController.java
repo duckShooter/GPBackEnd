@@ -63,6 +63,17 @@ public class EventController {
 		session.close();
 	}
 	
+	public static List <Profile> getEventUsers ( int eventId ) {
+		Event event = getEvent(eventId) ;
+		return event.getUsers() ;
+	}
+	
+	
+	public static Profile getEventOwner ( int eventId ) {
+		Event event = getEvent(eventId) ;
+		return event.getOwner() ;
+	}
+	
 	
 	
 	

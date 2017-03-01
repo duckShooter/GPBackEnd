@@ -195,6 +195,23 @@ public class Services {
 	}
 	
 	
+	@POST
+	@Path("/geteventusers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getEventUsers (@FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.getEventUsers(eventId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/geteventowner")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getEventOwner (@FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.getEventOwner(eventId));
+		return jsonString ;
+	}
 	
 	
 	
