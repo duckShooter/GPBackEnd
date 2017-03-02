@@ -139,23 +139,23 @@ public class UserController {
 	    double rectArea = areaOfRect(x1, y1, x2, y2, x3, y3, x4, y4);
 
 	    double triangleAreaSum = (trinagle1Area+trinagle2Area+trinagle3Area+trinagle4Area);
-	    System.out.println(triangleAreaSum) ;
-	    System.out.println(rectArea) ;
+//	    System.out.println(triangleAreaSum) ;
+//	    System.out.println(rectArea) ;
 
-	    if(triangleAreaSum<=rectArea)
+	    if((int)triangleAreaSum==(int)rectArea)
 	        return true;
 	    else
 	        return false;
 	}
 	
-	public static List <Profile> getFriendsOnMap (int userId ,double lon1 ,double lat1 ,double lon2 ,double lat2, double lon3 , double lat3 , double lon4 , double lat4) {
+	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ,  double lat3 ,double lon3 , double lat4 ,double lon4 ) {
 		Profile profile = getUser(userId) ;
 		List <Profile> friends = profile.getFriends() ;
 		List <Profile> closestFriends = new ArrayList <Profile> () ;
 		for ( int i = 0 ; i < friends.size() ; i++ ) {
 			Location location = getUserLastLocation (friends.get(i).getUser_Id());
 			if (location == null ) continue ;
-			if (check(lon1,lat1,lon2,lat2,lon3,lat3,lon4,lat4,location.getLongitude(),location.getLatitude()) == true ){
+			if (check(lat1,lon1,lat2,lon2,lat3,lon3,lat4,lon4,location.getLatitude(),location.getLongitude()) == true ){
 				closestFriends.add(friends.get(i)) ;
 			}	
 		}
