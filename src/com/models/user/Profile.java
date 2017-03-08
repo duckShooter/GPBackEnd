@@ -29,8 +29,6 @@ public class Profile  {
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
 	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = {@Parameter(value = "account", name = "property") })
 	private int User_Id ;
-	
-	
 	private String firstName;
     private String lastName;
     private String email;
@@ -200,7 +198,4 @@ public class Profile  {
 	public void setHistory(History history) {
 		this.history = history;
 	} 
-	
-	
-	
 }
