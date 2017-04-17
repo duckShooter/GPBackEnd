@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import org.boon.json.annotations.JsonIgnore;
+
 import com.models.user.Profile;
 
 @Entity
@@ -24,11 +26,14 @@ public class Area {
 	private int area_id ;
 	private double redius ;
 	
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "User_Id", nullable = false)
 	private Profile owner ;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	
+	@ManyToMany
 	@JoinTable(name = "area_profile", joinColumns = {
 			@JoinColumn(name = "area_id", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "user_id",
@@ -39,6 +44,15 @@ public class Area {
 	@JoinColumn(name = "location_id", nullable = false)
 	private Location location ;
 	
+	private String image ;
+	
+	
+	public int getArea_id() {
+		return area_id;
+	}
+	public void setArea_id(int area_id) {
+		this.area_id = area_id;
+	}
 	
 	public double getRedius() {
 		return redius;
@@ -52,9 +66,11 @@ public class Area {
 	public void setOwner(Profile owner) {
 		this.owner = owner;
 	}
+	
 	public List<Profile> getUsers() {
 		return users;
 	}
+	
 	public void setUsers(List<Profile> users) {
 		this.users = users;
 	}
@@ -63,6 +79,14 @@ public class Area {
 	}
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}	
+	
+	
 
 }

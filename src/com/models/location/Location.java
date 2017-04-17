@@ -71,7 +71,14 @@ public class Location {
 		this.areas = areas;
 	}
 
+	public int getLocation_id() {
+		return location_id;
+	}
+
+	public void setLocation_id(int location_id) {
+		this.location_id = location_id;
+	}
     
-    
+	
     
 }

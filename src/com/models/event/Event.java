@@ -1,5 +1,6 @@
 package com.models.event;
 
+import com.models.location.Area;
 import com.models.location.Location;
 import com.models.user.Profile;
 
@@ -16,7 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.boon.json.annotations.JsonIgnore;
 
@@ -28,35 +31,61 @@ public class Event  implements Comparable <Event>{
 	private int event_id;
     private String name;
     private String description;
-    private String imageURL;
 
-	@OneToOne
+	/*@OneToOne
 	@JoinColumn(name = "location_id")
-    private Location location;
-    private double radius;
+    private Location location;*/
+    //private double radius;
+    
+	@OneToOne
+	@JoinColumn(name = "area_id")
+    private Area area  ;
     
     private String dateOfEvent;
     private String deadline; //what is this ??
-    private boolean state;
     
     @JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "owner_id")
     private Profile owner ;
 	
     @JsonIgnore
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = "profile_event", joinColumns = {
 			@JoinColumn(name = "event_id", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "user_id",
 					nullable = false, updatable = false) })
     private List<Profile> users = new ArrayList <Profile> ();
+    
+    @JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "Event_Invetations", joinColumns = {
+			@JoinColumn(name = "eventId", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "userto",
+					nullable = false, updatable = false) })
+    private List <Profile> invitations = new ArrayList <Profile> () ;
 
+    //owner or participant 
+    @Transient
+    public int userStatus = 0 ;
+    
+    @Transient
+    public int eventState = 0 ;
 
-    public Event(){
-        imageURL = null;
-    }
-    public String getName() {
+    @JsonIgnore
+	@OneToMany (mappedBy = "event")
+    List <Suggestion> suggestions = new ArrayList<Suggestion> () ;
+    
+    
+    public int getEvent_id() {
+		return event_id;
+	}
+
+	public void setEvent_id(int event_id) {
+		this.event_id = event_id;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -80,15 +109,7 @@ public class Event  implements Comparable <Event>{
         this.description = description;
     }
 
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public Location getLocation() {
+   /* public Location getLocation() {
         return location;
     }
 
@@ -102,14 +123,24 @@ public class Event  implements Comparable <Event>{
 
     public void setRadius(double radius) {
         this.radius = radius;
-    }
+    }*/
+    
+   
 
-    @JsonIgnore
-    public List<Profile> getUsers() {
-        return users;
-    }
+    public Area getArea() {
+		return area;
+	}
 
-    @JsonIgnore
+	public void setArea(Area area) {
+		this.area = area;
+	}
+	
+	@JsonIgnore
+	public List<Profile> getUsers() {
+	        return users;
+	}
+
+	@JsonIgnore
     public void setUsers(List<Profile> users) {
         this.users = users;
     }
@@ -129,26 +160,42 @@ public class Event  implements Comparable <Event>{
     public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
-
-    public boolean isState() {
-        return state;
-    }
-
-    public void setState(boolean state) {
-        this.state = state;
-    }
     
 	@Override
 	public int compareTo(Event event) {
-		Timestamp time1 = Timestamp.valueOf(deadline) ;
-		Timestamp time2 = Timestamp.valueOf(event.deadline) ;
+		String d1 = deadline ;
+		String d2 = event.deadline ;
+	    if (d1.contains("T") ) {
+	    	d1 = d1.replace("T", " ") ;
+	    }
+	    if (d2.contains("T") ) {
+	    	d2 = d2.replace("T", " ") ;
+	    }
+	    //System.out.println(deadline);
+		Timestamp time1 = Timestamp.valueOf(d1) ;
+		Timestamp time2 = Timestamp.valueOf(d2) ;
 		return time1.compareTo(time2) ;
 	}
+
+	@JsonIgnore
+	public List<Profile> getInvitations() {
+		return invitations;
+	}
+
+	@JsonIgnore
+	public void setInvitations(List<Profile> invitations) {
+		this.invitations = invitations;
+	}
+
+	@JsonIgnore
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	@JsonIgnore
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
 	
-	/*public static Comparator<Event> EventTimeComparator
-     	= new Comparator<Event>() {
-			public int compare(Event event1, Event event2) {
-			return event1.compareTo(event2);
-		}
-		};*/
+	
 }

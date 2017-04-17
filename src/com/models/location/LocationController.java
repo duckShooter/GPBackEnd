@@ -1,6 +1,18 @@
 package com.models.location;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.boon.json.JsonFactory;
+import org.boon.json.ObjectMapper;
 import org.hibernate.Session;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
 import com.services.HibernateUtility;
@@ -26,13 +38,14 @@ public class LocationController {
 		return location ;
 	}
 	
-	public static Area createArea (double redius , int ownerId , int locationId ) {
+	public static Area createArea (double redius , int ownerId , int locationId  , String imageURL) {
 		Profile owner = UserController.getUser(ownerId) ;
 		Location location = getLocation(locationId) ;
 		Area area = new Area() ;
 		area.setRedius(redius);
 		area.setOwner(owner);
 		area.setLocation(location);
+		area.setImage(imageURL);
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.save(area) ;
@@ -42,6 +55,14 @@ public class LocationController {
 		return area ;
 	}
 	
+	public static Area createAreaWithUsers ( double redius , int ownerId , double lat , double lon , String name , List <Integer> usersId  , String imageURL) {
+		Location location = createLocation(lon, lat , name) ;
+		Area area = createArea(redius, ownerId, location.getLocation_id(), imageURL) ;
+		for ( int i = 0 ; i < usersId.size() ; i++ ) {
+			addUserToArae(usersId.get(i) , area.getArea_id());
+		}
+		return area ;
+	}
 	
 	public static Area getArae ( int areaId ) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
@@ -59,6 +80,45 @@ public class LocationController {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.update(area);
+		session.getTransaction().commit();
+		session.close();
+	}
+	
+	public static List <Profile> getAreaUsers (int areaId) {
+		Area area = getArae(areaId) ;
+		return area.getUsers() ;
+	}
+	
+	public static JSONArray getAreaUsersIdAndLocation (int areaId) {
+		Area area = getArae(areaId) ;
+		List <String> returnvalue = new ArrayList <String> () ;
+		List <Profile> users = area.getUsers() ;
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray() ;
+		List <String> result = new ArrayList <String> () ;
+		for ( int i = 0 ; i < users.size() ; i++ ) {
+			System.out.println(users.size());
+			Entry entry = UserController.getUserLastLocationAndTime(users.get(i).getUser_Id()) ;
+			Location location = (Location) entry.getValue();
+			obj.put("id",users.get(i).getUser_Id()) ;
+			obj.put("latitude",location.getLatitude() ) ;
+			obj.put("longitude", location.getLongitude()) ;
+			obj.put("time", entry.getKey()) ;
+			array.add(obj);	
+		}
+		return array;
+	}
+	
+	public static Profile getAreaOwner (int areaId ){
+		Area area = getArae(areaId) ;
+		return area.getOwner() ;
+	}
+	
+	public static void deleteArea (int areaId ) {
+		Area area = getArae(areaId) ;
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		session.delete(area);
 		session.getTransaction().commit();
 		session.close();
 	}

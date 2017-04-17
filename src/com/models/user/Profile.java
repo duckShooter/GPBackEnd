@@ -11,24 +11,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Transient;
 
 import org.boon.json.annotations.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import com.models.event.Event;
+import com.models.event.Suggestion;
 import com.models.location.Area;
 
 @Entity
-public class Profile  {
+public class Profile {
+	
 	
 	@Id @GeneratedValue(generator = "newGenerator") //name of the primary key generator
 	@GenericGenerator(name = "newGenerator", strategy = "foreign",parameters = {@Parameter(value = "account", name = "property") })
-	private int User_Id ;
+	private int user_Id ;
 	
 	
 	private String firstName;
@@ -36,50 +40,71 @@ public class Profile  {
     private String email;
     private String homeTown;
     private String name;
-   
     //@Temporal (TemporalType.DATE)
     private String birthday;
-    
 	private String pictureURL;
+	@Transient
+	public int eventStatus = 0 ;
+	
+	@Transient
+	public int friendShipStatus = 0;
+	
 	
 	
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "User_Id")
+	@JoinColumn(name = "user_Id")
 	private Account account = new Account() ;
 	
 	@JsonIgnore
-	@OneToMany (cascade = CascadeType.ALL , mappedBy = "owner")
+	@OneToMany ( mappedBy = "owner")
 	private List <Event> eventsWhoOwn = new ArrayList <Event> () ;
 	
 	@JsonIgnore
-	@ManyToMany(cascade = CascadeType.ALL , mappedBy = "users")
+	@ManyToMany(mappedBy = "users")
 	private List <Event> events = new ArrayList <Event> () ;
 	
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JsonIgnore
-	private List <Profile> Friends = new ArrayList <Profile> () ;
+	private List <Profile> Friends = new ArrayList <Profile> (0) ;
 
 	@JsonIgnore
-	@OneToMany (cascade = CascadeType.ALL,mappedBy = "owner")
+	@OneToMany (mappedBy = "owner")
     private List <Area> areasWhoOwn = new ArrayList<Area> () ;
 	
 	@JsonIgnore
-	@ManyToMany(cascade = CascadeType.ALL , mappedBy = "users")
+	@ManyToMany(mappedBy = "users")
 	private List <Area> areas = new ArrayList<Area> () ;
 
 	@JsonIgnore
 	@OneToOne (cascade = CascadeType.ALL)
 	@JoinColumn(name = "history_id")
 	private History history = new History() ; 
+
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "Friend_Requests", joinColumns = {
+			@JoinColumn(name = "userfrom", nullable = false, updatable = false) },
+			inverseJoinColumns = { @JoinColumn(name = "userto",
+					nullable = false, updatable = false) })
+	private List <Profile> Requestedto = new ArrayList<Profile>(0) ;
+	
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL,mappedBy = "Requestedto")
+	private List <Profile> pendingRequests = new ArrayList<Profile>(0) ;
+	
+	@JsonIgnore
+	@ManyToMany(mappedBy = "invitations")
+	private List <Event> eventInvitations = new  ArrayList <Event>() ;
+	
+	@JsonIgnore
+	@OneToMany (mappedBy = "profile")
+	private List <Suggestion> suggestions = new ArrayList<Suggestion> () ;
+	
 	
 	public int getUser_Id() {
-		return User_Id;
-	}
-
-	public void setUser_Id(int user_Id) {
-		User_Id = user_Id;
+		return user_Id;
 	}
 
 	public Account getAccount() {
@@ -193,13 +218,55 @@ public class Profile  {
 		this.areas = areas;
 	}
 
+	@JsonIgnore
 	public History getHistory() {
 		return history;
 	}
 
+	@JsonIgnore
 	public void setHistory(History history) {
 		this.history = history;
-	} 
+	}
+
+	@JsonIgnore
+	public List<Profile> getRequestedto() {
+		return Requestedto;
+	}
+
+	@JsonIgnore
+	public void setRequestedto(List<Profile> requestedto) {
+		Requestedto = requestedto;
+	}
+
+	@JsonIgnore
+	public List<Profile> getPendingRequests() {
+		return pendingRequests;
+	}
+
+	@JsonIgnore
+	public void setPendingRequests(List<Profile> pendingRequests) {
+		this.pendingRequests = pendingRequests;
+	}
+
+	@JsonIgnore
+	public List<Event> getEventInvitations() {
+		return eventInvitations;
+	}
+
+	@JsonIgnore
+	public void setEventInvitations(List<Event> eventInvitations) {
+		this.eventInvitations = eventInvitations;
+	}
+
+	@JsonIgnore
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	@JsonIgnore
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
 	
 	
 	

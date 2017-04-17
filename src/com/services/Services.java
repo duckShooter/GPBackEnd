@@ -18,12 +18,12 @@ import com.models.event.EventController;
 import com.models.location.Area;
 import com.models.location.Location;
 import com.models.location.LocationController;
+import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
 
 @Path("/")
 public class Services {
-
 
 	@SuppressWarnings("unchecked")
 	@POST
@@ -78,9 +78,9 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String createEvent(@FormParam("name")String name , @FormParam("description")String description , @FormParam("radius") double radius 
 			, @FormParam("userid") int userId ,@FormParam("dateofevent") String dateOfEvent ,  @FormParam("deadline") String deadline 
-			, @FormParam("imageurl") String imageURL , @FormParam("state") boolean state ,@FormParam("locationid") int locationId  ) {
+		    ,@FormParam("locationid") int locationId , @FormParam("img") String image   ) {
 		Event event = EventController.createEvent ( name ,  description ,  radius 
-				,  userId ,  dateOfEvent ,   deadline , imageURL ,  state ,  locationId ) ; 
+				,  userId ,  dateOfEvent ,   deadline ,  locationId , image ) ; 
 		ObjectMapper mapper = JsonFactory.create();
 		String jsonString = mapper.toJson(event);
 		return jsonString ;
@@ -105,16 +105,7 @@ public class Services {
 		return jsonString ;
 	}
 	
-	@POST
-	@Path("/addusertoevent")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String addUserToEvent (@FormParam("userid")int userId , @FormParam("eventid")int eventId) {
-		EventController.addUserToEvent(userId, eventId);
-		JSONObject json = new JSONObject();
-		json.put("operation", "Done");
-		return json.toJSONString();
-	}
-	
+	// own and participant 
 	@POST
 	@Path("/getuserevents")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -128,12 +119,23 @@ public class Services {
 	@Path("/createarea")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String createArea (@FormParam("ownerid")int ownerId,@FormParam("locationid")int locationId
-			,@FormParam("redius")double redius) {
-		Area area = LocationController.createArea(redius, ownerId, locationId) ;
+			,@FormParam("redius")double redius , @FormParam("imageurl")String imageurl) {
+		Area area = LocationController.createArea(redius, ownerId, locationId , imageurl) ;
 		ObjectMapper mapper = JsonFactory.create();
 		String jsonString = mapper.toJson(area);
 		return jsonString ;
 		
+	}
+	
+	@POST
+	@Path("/createareawithusers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String createAreaWithUsers (@FormParam("ownerid")int ownerId,@FormParam("lon")double lon , @FormParam("lat")double lat 
+			,@FormParam("redius")double redius , @FormParam("name")String name , @FormParam("imageurl")String imageurl , @FormParam("userid")List <Integer> usersId ) {
+		Area area = LocationController.createAreaWithUsers(redius, ownerId, lat, lon, name, usersId, imageurl) ;
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(area);
+		return jsonString ;	
 	}
 	
 	@POST
@@ -151,7 +153,8 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getUserAreas (@FormParam("userid")int userId) {
 	  ObjectMapper mapper = JsonFactory.create();
-	  String jsonString = mapper.toJson(UserController.getAreas(userId));
+	  ListObject area = UserController.getAreas(userId) ;
+	  String jsonString = mapper.toJson(area);
 	  return jsonString ;
 	}
 	
@@ -194,7 +197,6 @@ public class Services {
 		return jsonString ;
 	}
 	
-	
 	@POST
 	@Path("/geteventusers")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -205,21 +207,235 @@ public class Services {
 	}
 	
 	@POST
-	@Path("/geteventowner")
+	@Path("/getownersareas")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getEventOwner (@FormParam("eventid")int eventId) {
+	public String getOwnersAreas (@FormParam("ownerid")int ownerId) {
 		ObjectMapper mapper = JsonFactory.create();
-		String jsonString = mapper.toJson(EventController.getEventOwner(eventId));
+		String jsonString = mapper.toJson(UserController.getAreasWhoOwn(ownerId));
+		return jsonString ;
+	}
+
+	@POST
+	@Path("/getareausers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAreaUsers (@FormParam("areaid")int areaId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(LocationController.getAreaUsers(areaId));
 		return jsonString ;
 	}
 	
+	@POST
+	@Path("/getareaowner")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAreaOwner (@FormParam("areaid")int areaId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(LocationController.getAreaOwner(areaId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getuserbyid")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserById (@FormParam("userid")int userId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getUser(userId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/geteventbyid")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getEventById (@FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.getEvent(eventId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getareabyid")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAreaById (@FormParam("areaid")int areaId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(LocationController.getArae(areaId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getlocationbyid")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getLocationById (@FormParam("locationid")int locationId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(LocationController.getLocation(locationId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getareauserswithlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAreaUsersWithLocation (@FormParam("areaid")int areaId ,@FormParam("userid")int userId , @FormParam("pass")String password ) {
+		ObjectMapper mapper = JsonFactory.create();
+		JSONObject obj = new JSONObject();
+		obj.put("object", LocationController.getAreaUsersIdAndLocation(areaId))	;	
+		return obj.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/acceptfriendrequest")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String acceptFriendRequest (@FormParam("userid")int userId ,@FormParam("friendid")int friendId) {
+		UserController.acceptFriendRequest(userId, friendId);
+		JSONObject obj = new JSONObject();
+		obj.put("operation", "Done")	;	
+		return obj.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/rejectfriendrequest")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String rejectFriendRequest (@FormParam("userid")int userId ,@FormParam("friendid")int friendId) {
+		UserController.rejectFriendRequest(userId, friendId);
+		JSONObject obj = new JSONObject();
+		obj.put("operation", "Done")	;	
+		return obj.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/getpendingrequests")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPendingRequests (@FormParam("userid")int userId ) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getPendingRequests(userId));
+		return jsonString ;
+	}
+
+	@POST
+	@Path("/getfriendrequests")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFriendRequests (@FormParam("userid")int userId ) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getFriendRequests(userId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/removefriend")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeFriend (@FormParam("userid")int userId ,@FormParam("friendid")int friendId) {
+		UserController.removeFriend(userId, friendId); ;
+		JSONObject obj = new JSONObject();
+		obj.put("operation", "Done")	;	
+		return obj.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/updateuserlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateUserLocation  (@FormParam("userid")int userId ,@FormParam("lat")double latitude ,@FormParam("lon")double longitude ) {
+		UserController.updateLocation(userId, latitude, longitude); ;
+		JSONObject obj = new JSONObject();
+		obj.put("operation", "Done")	;	
+		return obj.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/sendinvitation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sendInvitation (@FormParam("friendid")int friendId , @FormParam("eventid")int eventId) {
+		EventController.sendInvitation(friendId, eventId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/accepteventinvitation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String acceptEventInvitation (@FormParam("userid")int userId , @FormParam("eventid")int eventId) {
+		UserController.acceptEventInvitation(userId, eventId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/rejecteventinvitation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String rejectEventInvitation (@FormParam("userid")int userId , @FormParam("eventid")int eventId) {
+		UserController.rejectEventInvitation(userId, eventId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/listofuserstoinvit")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String listOfUsersToInvit (@FormParam("userid")int userId , @FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.listOfUsersToInvit(userId, eventId));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/getuserdetails")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserDetails (@FormParam("userid1")int userId1 , @FormParam("userid2")int userId2) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getUserDetails(userId1, userId2));
+		return jsonString ;
+	}
+	
+	@POST
+	@Path("/deleteevent")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deleteEvent (@FormParam("eventid")int eventId) {
+		EventController.deleteEvent(eventId);
+		JSONObject json = new JSONObject();
+		json.put("operation", "Done");
+		return json.toJSONString();
+	}
+
+	
+	@POST
+	@Path("/addsuggestion")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addSuggestion (@FormParam("userid")int userId ,@FormParam("eventid")int eventId ,@FormParam("date")String date ) {
+		
+		JSONObject json = new JSONObject();
+		json.put("operation", EventController.addSuggestion(userId, eventId, date));
+		return json.toJSONString();
+	}
 	
 	
+	@POST
+	@Path("/acceptsuggestion")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String acceptSuggestion (@FormParam("userid")int userId ,@FormParam("eventid")int eventId ,@FormParam("suggestionid")int suggestionId ) {
+		
+		JSONObject json = new JSONObject();
+		json.put("operation", EventController.acceptSuggestion(userId, eventId, suggestionId));
+		return json.toJSONString();
+	}
 	
 	
+	@POST
+	@Path("/rejectsuggestion")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String rejectSuggestion (@FormParam("userid")int userId ,@FormParam("eventid")int eventId ,@FormParam("suggestionid")int suggestionId ) {
+		
+		JSONObject json = new JSONObject();
+		json.put("operation", EventController.rejectSuggestion(userId, eventId, suggestionId));
+		return json.toJSONString();
+	}
 	
 	
-	
-	
+	@POST
+	@Path("/getsuggestions")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getSuggestions (@FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.getSuggestions(eventId));
+		return jsonString ;
+	}
 	
 }

@@ -1,15 +1,20 @@
 package com.models.user;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.hibernate.Session;
 import com.models.event.Event;
+import com.models.event.EventController;
 import com.models.location.Area;
 import com.models.location.Location;
 import com.models.location.LocationController;
+import com.models.others.ListObject;
 import com.services.HibernateUtility;
 
 
@@ -27,12 +32,10 @@ public class UserController {
 		profile.setName(name);
 		profile.setPictureURL(pictureURL);
 		profile.setBirthday(birthday);
-		
 		Account account = new Account(); //Set up an Account object
 		account.setPassword(password);
 		account.setType(type);
 		profile.setAccount(account);
-		
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.save(profile);
@@ -52,6 +55,43 @@ public class UserController {
 	}
 	
 	public static void addFriend (int userId, int friendId) {
+		Profile user = getUser(userId) ;
+		Profile friend = getUser(friendId) ;
+		if (searchArray(user.getFriends(), friend) != -1 || searchArray(user.getPendingRequests(), friend) != -1 || searchArray(user.getRequestedto(), friend) != -1 )
+			return ;
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		(user.getRequestedto()).add(friend) ;
+		session.update(user);
+		session.getTransaction().commit();
+		session.close() ;
+	}
+	
+	public static int searchArray ( List <Profile> list , Profile o) {
+		for ( int i = 0 ; i < list.size() ; i++ ) {
+			if ( list.get(i).getUser_Id() == o.getUser_Id())
+				return i ;
+		}
+		return -1 ;
+	}
+	
+	public static void RemoveFriendFromPending (int userId , int friendId ) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		Profile user = getUser(userId) ;
+		Profile friend = getUser(friendId) ;
+		if (searchArray(friend.getRequestedto(),user) == -1 )
+			return ;
+		(friend.getRequestedto()).remove(searchArray(friend.getRequestedto(),user)) ;
+		System.out.println((friend.getRequestedto()).size());
+		session.update(friend);
+		session.getTransaction().commit();
+		session.close() ;
+		
+	}
+	
+	public static void acceptFriendRequest (int userId , int friendId) {
+		RemoveFriendFromPending (userId,friendId) ;
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		Profile user = getUser(userId) ;
@@ -62,6 +102,40 @@ public class UserController {
 		session.update(friend);
 		session.getTransaction().commit();
 		session.close() ;
+		
+	}
+	
+	public static void rejectFriendRequest ( int userId ,int friendId) {
+		RemoveFriendFromPending (userId,friendId) ;
+	}
+	
+	public static void removeFriend ( int userId , int friendId ) {
+		Profile user = getUser(userId) ;
+		Profile friend = getUser(friendId) ;
+		int index1 = searchArray(user.getFriends(),friend) ;
+		if (index1 == -1 )
+			return ;
+		int index2 = searchArray(friend.getFriends(),user) ;
+		if ( index2 == -1 )
+			return ;
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		(user.getFriends()).remove(index1) ;
+		(friend.getFriends()).remove(index2) ;
+		session.update(user);
+		session.update(friend);
+		session.getTransaction().commit();
+		session.close() ;
+	}
+	
+	public static List <Profile> getPendingRequests (int userId ) {
+		Profile user = getUser(userId) ;
+		return user.getPendingRequests() ;
+	}
+	
+	public static List <Profile> getFriendRequests (int userId) {
+		Profile user = getUser(userId) ;
+		return user.getRequestedto() ;
 	}
 	
 	public static List <Profile> getFriends ( int userId ) {
@@ -69,9 +143,14 @@ public class UserController {
 		return user.getFriends() ;
 	}
 	
+	// own and participant 
 	public static List <Event> getEvents ( int userId ) {
 		Profile user = getUser(userId) ;
-		return user.getEvents() ;
+		List <Event> events =EventController.setUserStatus(user.getEventsWhoOwn(), 2);
+		events.addAll( EventController.setUserStatus(user.getEvents(), 1)) ;
+		Collections.sort(events);
+		events = EventController.markEventState(events) ;
+		return events;
 	}
 	
 	public static List <Event> getEventsWhoOwn ( int userId) {
@@ -79,9 +158,10 @@ public class UserController {
 		return user.getEventsWhoOwn();
 	}
 	
-	public static List <Area> getAreas ( int userId ) {
+	public static ListObject getAreas ( int userId ) {
 		Profile user = getUser(userId) ;
-		return user.getAreas() ;
+		ListObject list = new ListObject (user.getAreas()) ;
+		return list;
 	}
 	
 	public static List <Area> getAreasWhoOwn ( int userId ) {
@@ -89,8 +169,6 @@ public class UserController {
 		return user.getAreasWhoOwn() ;
 	}
 	
-	
-
 	public static double areaOfTriangle(double xa,double ya, double xb, double yb, double px, double py)
 	{
 	    double side1 = Math.sqrt(Math.pow(Math.abs(ya-yb),2) + Math.pow(Math.abs(xa-xb),2));
@@ -103,7 +181,6 @@ public class UserController {
 
 	    return area;
 	}
-
 
 	public static double areaOfRect(double x1, double y1,
 			double x2, double y2,
@@ -119,8 +196,6 @@ public class UserController {
 	    return area;
 
 	}
-
-
 
 	public static boolean check(double x1, double y1,
 			double x2, double y2,
@@ -139,8 +214,8 @@ public class UserController {
 	    double rectArea = areaOfRect(x1, y1, x2, y2, x3, y3, x4, y4);
 
 	    double triangleAreaSum = (trinagle1Area+trinagle2Area+trinagle3Area+trinagle4Area);
-//	    System.out.println(triangleAreaSum) ;
-//	    System.out.println(rectArea) ;
+	    System.out.println(triangleAreaSum) ;
+	    System.out.println(rectArea) ;
 
 	    if((int)triangleAreaSum==(int)rectArea)
 	        return true;
@@ -175,6 +250,7 @@ public class UserController {
 	    	user.getHistory().setPositions(positions);
 	    }
 	    else {
+	    	user.getHistory().getPositions().clear();
 	    	user.getHistory().getPositions().put(time, location) ;
 	    }
 		session.update(user);
@@ -192,15 +268,76 @@ public class UserController {
 		return location ;
 	}
 	
-
-	public static List <Event> getNearbyEvents (int userId) {
+	public static Entry<String, Location>  getUserLastLocationAndTime ( int userId ) {
 		Profile user = getUser(userId) ;
-		List <Event> events = user.getEvents() ;
-		Collections.sort(events);
-		int size = 5 ;
-		if ( events.size() < 5 )
-			size = events.size() ;
-		return events.subList(0,size) ;
+		if (user.getHistory() == null ) return null ;
+		Map <String,Location> map = user.getHistory().getPositions() ;
+		Entry<String, Location> entry=map.entrySet().iterator().next();
+		return entry ;
 	}
+		
+	// moreExist = 1 -> <= 5
+	// moreExist = 2 -> > 5
+	public static ListObject getNearbyEvents (int userId) {
+		Profile user = getUser(userId) ;
+		List <Event> events =EventController.setUserStatus(user.getEventsWhoOwn(), 2);
+		events.addAll( EventController.setUserStatus(user.getEvents(), 1)) ;
+		Collections.sort(events);
+		List <Event> unfinished = EventController.getUnfinishedEvents(events) ;
+		int size = 5 ;
+		ListObject obj ;
+		if ( unfinished.size() <= 5 ) {
+			obj = new ListObject(unfinished) ;
+			if ( unfinished.size() >= events.size() ) {
+				obj.moreExist = 1 ;
+			}
+			else obj.moreExist = 2 ;
+		}
+		else {
+			obj = new ListObject(unfinished.subList(0,size));
+			obj.moreExist = 2 ;
+		}
+		
+		return obj ;
+	}
+	
+	public static void updateLocation (int userId , double latitude , double longitude )  {
+		Location location = LocationController.createLocation(longitude, latitude, "") ;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		String time = dateFormat.format(date).toString() ;
+		addUserLocation(userId, location.getLocation_id(), time);
+	}
+	
+	public static void acceptEventInvitation (int userId , int eventId ) {
+		Profile user = getUser(userId) ;
+		int index = EventController.searchForEvent(user.getEventInvitations(),eventId) ;
+		if ( index != -1 ) {
+			EventController.addUserToEvent(userId, eventId);
+			EventController.removeFromInvitationList(eventId, userId);
+		}	
+	}
+	
+	public static void rejectEventInvitation (int userId , int eventId) {
+		Profile user = getUser(userId) ;
+		int index = EventController.searchForEvent(user.getEventInvitations(),eventId) ;
+		if ( index != -1 ) {
+			EventController.removeFromInvitationList(eventId, userId);
+		}
+	}
+	
+	public static Profile getUserDetails (int userId1 , int userId2 ) {
+		Profile user1 = getUser(userId1) ;
+		Profile user2 = getUser(userId2) ;
+		
+		if ( searchArray(user1.getFriends(),user2) != -1 ) user1.friendShipStatus = 1 ;
+		else if ( searchArray(user1.getPendingRequests(),user2) != -1 ) user1.friendShipStatus = 2 ;
+		else if ( searchArray(user1.getRequestedto(),user2) != -1 ) user1.friendShipStatus = 3 ;
+		else  user1.friendShipStatus = 4 ;
+		
+		return user1 ;
+		
+	}
+	
 	
 }
