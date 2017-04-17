@@ -47,11 +47,11 @@ public class UserController {
 	
 	public static Profile getUser (int userId) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
-		session.beginTransaction() ;
-		Profile profile = (Profile)session.get(Profile.class, userId) ;
+		session.beginTransaction();
+		Profile profile = (Profile)session.get(Profile.class, userId);
 		session.getTransaction().commit();
-		session.close() ;
-		return profile ;
+		session.close();
+		return profile;
 	}
 	
 	public static void addFriend (int userId, int friendId) {
