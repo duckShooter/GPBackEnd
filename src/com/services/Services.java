@@ -1,5 +1,6 @@
 package com.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import com.models.location.LocationController;
 import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
+import com.sun.jna.platform.win32.Sspi.TimeStamp;
 
 @Path("/")
 public class Services {
@@ -34,21 +36,6 @@ public class Services {
 		JSONObject json = new JSONObject();
 		json.put("operation", "Done");
 		return json.toJSONString();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@POST
-	@Path("/signup")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String SignUp(@FormParam("firstname") String firstname ,@FormParam("lastname") String lastname,@FormParam("email") String email,
-			@FormParam("hometown") String hometown,@FormParam("name") String name,
-			@FormParam("birthday") String birthday,@FormParam("pictureURL") String pictureURL,
-			@FormParam("pass") String pass,@FormParam("type") String type) {
-		
-		Profile profile = UserController.addUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, type);
-		ObjectMapper mapper = JsonFactory.create();
-		String jsonString = mapper.toJson(profile);
-		return jsonString ;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -148,15 +135,15 @@ public class Services {
 	  return json.toJSONString();
 	}
 	
-	@POST
+	/*@POST
 	@Path("/getuserareas")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getUserAreas (@FormParam("userid")int userId) {
 	  ObjectMapper mapper = JsonFactory.create();
-	  ListObject area = UserController.getAreas(userId) ;
+	  ListObject area = UserController.getAreasWhoOwn(userId) ;
 	  String jsonString = mapper.toJson(area);
 	  return jsonString ;
-	}
+	}*/
 	
 	@POST
 	@Path("/adduserlocation")
@@ -207,7 +194,7 @@ public class Services {
 	}
 	
 	@POST
-	@Path("/getownersareas")
+	@Path("/getuserareas")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getOwnersAreas (@FormParam("ownerid")int ownerId) {
 		ObjectMapper mapper = JsonFactory.create();
@@ -437,5 +424,80 @@ public class Services {
 		String jsonString = mapper.toJson(EventController.getSuggestions(eventId));
 		return jsonString ;
 	}
+	
+	
+	@POST
+	@Path("/gettimestamp")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String  getTimeStamp () {
+		Timestamp time = new Timestamp(System.currentTimeMillis()) ;
+		if (time.getHours()+6 > 24 )
+			time.setHours((time.getHours()+6)-24);
+		else 
+			time.setHours(time.getHours()+6);
+		JSONObject json = new JSONObject();
+		json.put("Time",time.toString());
+		return json.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/geteventuserswithlocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String  getEventUsersWithLocation (@FormParam("eventid")int eventId) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(EventController.getEventUsersWithLocation(eventId));
+		return jsonString ;
+	}
+	
+	
+	
+	@POST
+	@Path("/checkregiseration")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String  checkRegiseration (@FormParam("loginid")long loginId , @FormParam("provider")String provider ) {
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.checkRegiseration(loginId, provider));
+		return jsonString ;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@POST
+	@Path("/register")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String register(@FormParam("firstname") String firstname ,@FormParam("lastname") String lastname,@FormParam("email") String email,
+			@FormParam("hometown") String hometown,@FormParam("name") String name,
+			@FormParam("birthday") String birthday,@FormParam("pictureURL") String pictureURL,
+			@FormParam("pass") String pass , @FormParam("provider") String provider , @FormParam("loginid") long loginId ) {
+		
+		Profile profile = UserController.addUser(firstname, lastname, email, hometown, name, birthday, pictureURL, pass, provider , loginId);
+		JSONObject json = new JSONObject();
+		json.put("id",profile.getUser_Id());
+		return json.toJSONString() ;
+	}
+	
+	@POST
+	@Path("/updateplaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String register(@FormParam("userid") int userId ,@FormParam("areaid") int areaId) {
+		
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getGreaterAreas(userId, areaId));
+		return jsonString ;
+	
+	}
+	
+	@POST
+	@Path("/searchuserbyname")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String searchUserByName(@FormParam("name") String name ) {
+		
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.searchByName(name));
+		return jsonString ;
+	
+	}
+	
 	
 }

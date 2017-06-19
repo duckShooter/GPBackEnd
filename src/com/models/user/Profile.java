@@ -45,11 +45,12 @@ public class Profile {
 	private String pictureURL;
 	@Transient
 	public int eventStatus = 0 ;
-	
 	@Transient
 	public int friendShipStatus = 0;
-	
-	
+	@Transient
+	public double latitude = 0.0 ;
+	@Transient
+	public double longitude = 0.0 ;
 	
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)

@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.user.Profile;
 import com.models.user.UserController;
@@ -68,6 +69,10 @@ public class EventController {
 		for ( int i = 0 ; i < events.size() ; i++ ) {
 			Timestamp time = Timestamp.valueOf(events.get(i).getDeadline().replace("T", " ")) ;
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			if (timestamp.getHours()+6 > 24 )
+				timestamp.setHours((timestamp.getHours()+6)-24);
+			else 
+				timestamp.setHours(timestamp.getHours()+6);
 			if (time.after(timestamp)) events.get(i).eventState = 1 ;
 			else events.get(i).eventState = 2 ;
 		}
@@ -127,6 +132,16 @@ public class EventController {
 		return allUsers ;
 	}
 	
+	
+	public static List <Profile> getEventUsersWithLocation (int eventId ) {
+		List <Profile> list = getEventUsers(eventId) ;
+		for ( int i = 0 ; i < list.size() ; i++ ) {
+			Location location = UserController.getUserLastLocation (list.get(i).getUser_Id());
+			list.get(i).latitude = location.getLatitude() ;
+			list.get(i).longitude = location.getLongitude() ;
+		}
+		return list ;
+	}
 	
 	
 	public static Profile getEventOwner ( int eventId ) {

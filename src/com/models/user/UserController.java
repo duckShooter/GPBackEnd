@@ -8,7 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.models.event.Event;
 import com.models.event.EventController;
 import com.models.location.Area;
@@ -22,7 +27,7 @@ public class UserController {
 	
 	public static Profile addUser (String firstName , String lastName , String email , 
 			String homeTown , String name , String birthday , String pictureURL , 
-			String password , String type ) {
+			String password , String provider , long loginId ) {
 		
 		Profile profile = new Profile() ; //Set up a Profile object
 		profile.setFirstName(firstName);
@@ -34,7 +39,8 @@ public class UserController {
 		profile.setBirthday(birthday);
 		Account account = new Account(); //Set up an Account object
 		account.setPassword(password);
-		account.setType(type);
+		account.setProvider(provider);
+		account.setLoginId(loginId);
 		profile.setAccount(account);
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
@@ -164,9 +170,25 @@ public class UserController {
 		return list;
 	}
 	
+	
+	
 	public static List <Area> getAreasWhoOwn ( int userId ) {
 		Profile user = getUser(userId) ;
+		System.out.println("cdscscsdcdsdsdcsdcsd" + user.getAreasWhoOwn().size());
 		return user.getAreasWhoOwn() ;
+	}
+	
+	
+	public static List <Area> getGreaterAreas (int userId , int areaId) {
+		List <Area> areas = getAreasWhoOwn (userId) ;
+		List <Area> result = new <Area> ArrayList () ;
+		for ( int i = 0 ;  i< areas.size() ; i++ ) {
+			if (areas.get(i).getArea_id() > areaId) {
+				result.add(areas.get(i)) ;
+			}
+		}
+		return result ;
+		
 	}
 	
 	public static double areaOfTriangle(double xa,double ya, double xb, double yb, double px, double py)
@@ -231,6 +253,8 @@ public class UserController {
 			Location location = getUserLastLocation (friends.get(i).getUser_Id());
 			if (location == null ) continue ;
 			if (check(lat1,lon1,lat2,lon2,lat3,lon3,lat4,lon4,location.getLatitude(),location.getLongitude()) == true ){
+				friends.get(i).latitude = location.getLatitude() ;
+				friends.get(i).longitude = location.getLongitude() ;
 				closestFriends.add(friends.get(i)) ;
 			}	
 		}
@@ -275,7 +299,7 @@ public class UserController {
 		Entry<String, Location> entry=map.entrySet().iterator().next();
 		return entry ;
 	}
-		
+	
 	// moreExist = 1 -> <= 5
 	// moreExist = 2 -> > 5
 	public static ListObject getNearbyEvents (int userId) {
@@ -337,6 +361,43 @@ public class UserController {
 		
 		return user1 ;
 		
+	}
+	
+	public static JSONObject checkRegiseration (long loginId , String provider) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		Query query = session.createQuery("from Account where loginId = :id and provider = :provider ");
+		query.setParameter("id", loginId );
+		query.setParameter("provider", provider );
+		List list = query.list();
+		session.getTransaction().commit();
+		 session.close() ;
+		 JSONObject obj = new JSONObject();
+		 String isRegisterd ;
+		 if (list.size() == 0 ) { 
+			 obj.put("isRegisterd","1") ;
+			 return obj ;
+		 }
+		 Account account = (Account) list.get(0) ;
+		 obj.put("isRegisterd","2") ;
+		 obj.put("id",String.valueOf(account.getUser_Id())) ;
+		 obj.put("pass",account.getPassword()) ;
+		 Profile user = getUser(account.getUser_Id()) ;
+		 obj.put("name",user.getName()) ;
+		 
+		 return obj ;
+	}
+	
+	
+	public static List <Profile> searchByName (String name) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction() ;
+		Query query = session.createQuery("from Profile where name = :name ");
+		query.setParameter("name", name );
+		List list = query.list();
+		session.getTransaction().commit();
+		session.close() ; 
+		return list ;
 	}
 	
 	
