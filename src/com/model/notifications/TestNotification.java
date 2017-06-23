@@ -7,6 +7,7 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
+@Deprecated
 public class TestNotification implements Notification {
 	
 	@Transient //Don't save in database - needed only for firebase request body
@@ -59,13 +60,25 @@ public class TestNotification implements Notification {
 	
 	//Local Testing
 	public static void main(String[] args) {
-		TestNotification s = new TestNotification();
+		/*TestNotification s = new TestNotification();
 		s.body = "sdfsf";
 		s.title = "sadasd";
 		s.data = new HashMap<>();
 		s.data.put("A", "sdfsdf");
 		s.data.put("ew", "sdfsdf");
-		System.out.println(s.toJsonString());
+		System.out.println(s.toJsonString());*/
+		//==============================================================
+		/*double lat1 = 24.504980; double lon1 = -102.341280 ;
+		double lat2 = 24.504988; double lon2 = -102.340064;
+		final double earthRadius = 6371.0 * 1000; //meter
+		final double radius = 200.0;
+		double deltaLat = Math.toRadians(lat1 - lat2); //Degrees to radians
+		double deltaLon = Math.toRadians(lon1 - lon2);
+		double tempA = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) + Math.cos(Math.toRadians(lat1)) 
+						* Math.cos(Math.toRadians(lat2)) * Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+		double tempC = 2 * Math.atan2(Math.sqrt(tempA), Math.sqrt(1.0 - tempA));
+		double distance = earthRadius * tempC;						
+		System.out.println("distance: " + distance + " | radius: " + radius + " | the point is " + (distance <= radius ? "inside" : "outside") + " the area."); */
 	}
 	
 }

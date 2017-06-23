@@ -17,6 +17,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
  * 	- More about firebase authentication
  * 		https://firebase.google.com/docs/cloud-messaging/server
  */
+
+@Deprecated
 public class FirebaseCloudMessaging {
 	private final String connectionURL = "https://fcm.googleapis.com/fcm/send";
 	private final String apiKey = "AAAA6M8l4a8:APA91bEPzrrw1FSk6dD1LFu3bo6fnCAycSHuzKSs61pQt6Bmy6YWHApP-GiWe3Uh8oeuhuuoJJp6ryCDbdQAlWuwguzk8AdEEX7g0q2O4xARU_cYoIVEVmierOXWsNBhFDjOdMtaRnCJ";
