@@ -26,12 +26,10 @@ public class Area {
 	private int area_id ;
 	private double redius ;
 	
-	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "User_Id", nullable = false)
 	private Profile owner ;
-	
 	
 	@ManyToMany
 	@JoinTable(name = "area_profile", joinColumns = {
@@ -83,10 +81,20 @@ public class Area {
 	public String getImage() {
 		return image;
 	}
+	
 	public void setImage(String image) {
 		this.image = image;
-	}	
+	}
 	
-	
-
+	public boolean containsLocation(double latitude, double longitude) { //Tested
+		//The following method uses 'Haversine' formula to calculate the spherical distance between two points
+		final double earthRadius = 6371.0 * 1000; //Meters
+		double deltaLat = Math.toRadians(latitude - location.getLatitude()); //Degrees to radians
+		double deltaLon = Math.toRadians(longitude - location.getLongitude());
+		double tempA = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) + Math.cos(Math.toRadians(latitude)) 
+						* Math.cos(Math.toRadians(location.getLatitude())) * Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+		double tempC = 2 * Math.atan2(Math.sqrt(tempA), Math.sqrt(1.0 - tempA));
+		double distance = earthRadius * tempC;						
+		return distance <= redius;
+	}
 }
