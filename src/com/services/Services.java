@@ -169,10 +169,9 @@ public class Services {
 	@POST
 	@Path("/getfriendsonmap")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getFriendsOnMap (@FormParam("userid")int userId , @FormParam("lat1")double lat1  ,@FormParam("lon1") double lon1 ,@FormParam("lat2")double lat2,@FormParam("lon2") double lon2 ,
-			@FormParam("lat3") double lat3 ,@FormParam("lon3") double lon3 ,@FormParam("lat4") double lat4 ,@FormParam("lon4") double lon4)  {
+	public String getFriendsOnMap (@FormParam("userid")int userId , @FormParam("lat1")double lat1  ,@FormParam("lon1") double lon1 ,@FormParam("lat2")double lat2,@FormParam("lon2") double lon2 )  {
 		ObjectMapper mapper = JsonFactory.create();
-		String jsonString = mapper.toJson(UserController.getFriendsOnMap(userId,lat1 ,lon1,lat2, lon2, lat3 ,lon3, lat4,lon4));
+		String jsonString = mapper.toJson(UserController.getFriendsOnMap(userId,lat1 ,lon1,lat2, lon2));
 		return jsonString ;
 	}
 	
@@ -395,7 +394,7 @@ public class Services {
 	}
 	
 	
-	@GET
+	@POST
 	@Path("/add")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String add ( ) {
@@ -512,6 +511,24 @@ public class Services {
 		return jsonString ;
 	
 	}
+
+@POST
+@Path("/getsomeareas")
+@Produces(MediaType.TEXT_PLAIN)
+public String getSomeAreas(@FormParam("userid") int userid ,@FormParam("areaid") int areaid  ) {
 	
-	
+	ObjectMapper mapper = JsonFactory.create();
+	String jsonString = mapper.toJson(UserController.getSomeAreas(userid, areaid));
+	return jsonString ;
+
 }
+
+
+
+
+
+
+}
+
+
+

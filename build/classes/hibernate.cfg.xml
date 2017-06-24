@@ -13,9 +13,9 @@
         <property name="hibernate.enable_lazy_load_no_trans">true</property> 
         
         
-        <property name="connection.url">jdbc:mysql://127.3.240.2:3306/restapi</property>
-        <property name="connection.username">adminG8bkbae </property>
-        <property name="connection.password">1k8gKuh2Lzzx</property>
+        <property name="connection.url">jdbc:mysql://127.8.2.130:3306/restapi</property>
+        <property name="connection.username">adminvA1HI7Q </property>
+        <property name="connection.password">_tGrEtnHwzqG</property>
       
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">10</property>
