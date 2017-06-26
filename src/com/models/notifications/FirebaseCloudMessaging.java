@@ -1,4 +1,4 @@
-package com.model.notifications;
+package com.models.notifications;
 
 import java.io.IOException;
 
@@ -16,6 +16,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
  * [Useful Links]
  * 	- More about firebase authentication
  * 		https://firebase.google.com/docs/cloud-messaging/server
+ * 	- More information about notification content: 
+ * 		https://firebase.google.com/docs/notifications/android/console-audience
+ * 	- More about the device registration token:
+ * 		https://firebase.google.com/docs/notifications/android/console-device
  */
 
 @Deprecated
