@@ -180,8 +180,14 @@ public class UserController {
 	
 	public static List <Area> getAreasWhoOwn ( int userId ) {
 		Profile user = getUser(userId) ;
-		System.out.println("cdscscsdcdsdsdcsdcsd" + user.getAreasWhoOwn().size());
-		return user.getAreasWhoOwn() ;
+		List <Area> areas = user.getAreasWhoOwn() ;
+		List <Area> result = new ArrayList<Area>() ;
+		for ( int i = 0 ; i < areas.size() ; i++ ) {
+			if (areas.get(i).getUsers().size() != 0 )
+				result.add(areas.get(i)) ;
+				
+		}
+		return result;
 	}
 	
 	
@@ -196,6 +202,33 @@ public class UserController {
 		return result ;
 		
 	}
+	
+	
+	
+	public static List <Area> getSomeAreas (int userId , int areaId) {
+		Profile user = getUser(userId) ;
+		if ( areaId == -1 ) 
+			return getAreasWhoOwn (userId) ;
+		else {
+			Session session = HibernateUtility.getSessionFactory().openSession();
+			session.beginTransaction() ;
+			Query query = session.createQuery("from Area where area_id > :areaid and User_Id = :userid ");
+			query.setParameter("areaid", areaId );
+			query.setParameter("userid", userId );
+			List <Area> list = query.list();
+			session.getTransaction().commit();
+			session.close() ; 
+			List  <Area>  result = new ArrayList  <Area>  () ;
+			for ( int i = 0 ; i < list.size() ; i++ ) {
+				if (list.get(i).getUsers().size() != 0 )
+					result.add(list.get(i)) ;	
+			}
+			return result;
+		}
+		
+	}
+	
+	
 	
 	public static double areaOfTriangle(double xa,double ya, double xb, double yb, double px, double py) {
 	    double side1 = Math.sqrt(Math.pow(Math.abs(ya-yb),2) + Math.pow(Math.abs(xa-xb),2));
