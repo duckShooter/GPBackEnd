@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -31,12 +32,15 @@ public class Area {
 	@JoinColumn(name = "User_Id", nullable = false)
 	private Profile owner ;
 	
-	@ManyToMany
+	/*@ManyToMany
 	@JoinTable(name = "area_profile", joinColumns = {
 			@JoinColumn(name = "area_id", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "user_id",
 					nullable = false, updatable = false) })
-	private List <Profile> users = new ArrayList <Profile> () ;
+	private List <Profile> users = new ArrayList <Profile> () ;*/
+	
+	@OneToMany(mappedBy = "area",cascade = CascadeType.ALL)
+	private List <area_profile> users = new ArrayList <area_profile> () ;
 	
 	@ManyToOne
 	@JoinColumn(name = "location_id", nullable = false)
@@ -65,11 +69,11 @@ public class Area {
 		this.owner = owner;
 	}
 	
-	public List<Profile> getUsers() {
+	public List<area_profile> getUsers() {
 		return users;
 	}
 	
-	public void setUsers(List<Profile> users) {
+	public void setUsers(List<area_profile> users) {
 		this.users = users;
 	}
 	public Location getLocation() {

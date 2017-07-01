@@ -76,7 +76,11 @@ public class LocationController {
 	public static void addUserToArae ( int userId , int areaId ) {
 		Area area = getArae(areaId) ;
 		Profile user = UserController.getUser(userId) ;
-		(area.getUsers()).add(user) ;
+		area_profile obj = new area_profile () ;
+		obj.setArea(area);
+		obj.setProfile(user);
+		obj.setState(true);
+		(area.getUsers()).add(obj);
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.update(area);
@@ -86,21 +90,26 @@ public class LocationController {
 	
 	public static List <Profile> getAreaUsers (int areaId) {
 		Area area = getArae(areaId) ;
-		return area.getUsers() ;
+		List <area_profile> area_profiles = area.getUsers() ;
+		List <Profile> users = new ArrayList <Profile> () ;
+		for ( int i = 0 ; i < area_profiles.size() ; i++ ) {
+			users.add(area_profiles.get(i).getProfile());
+		}
+		return users ;
 	}
 	
 	public static JSONArray getAreaUsersIdAndLocation (int areaId) {
 		Area area = getArae(areaId) ;
 		List <String> returnvalue = new ArrayList <String> () ;
-		List <Profile> users = area.getUsers() ;
+		List <area_profile> users = area.getUsers() ;
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray() ;
 		List <String> result = new ArrayList <String> () ;
 		for ( int i = 0 ; i < users.size() ; i++ ) {
 			System.out.println(users.size());
-			Entry entry = UserController.getUserLastLocationAndTime(users.get(i).getUser_Id()) ;
+			Entry entry = UserController.getUserLastLocationAndTime(users.get(i).getProfile().getUser_Id()) ;
 			Location location = (Location) entry.getValue();
-			obj.put("id",users.get(i).getUser_Id()) ;
+			obj.put("id",users.get(i).getProfile().getUser_Id()) ;
 			obj.put("latitude",location.getLatitude() ) ;
 			obj.put("longitude", location.getLongitude()) ;
 			obj.put("time", entry.getKey()) ;
