@@ -19,6 +19,9 @@ import com.models.event.EventController;
 import com.models.location.Area;
 import com.models.location.Location;
 import com.models.location.LocationController;
+import com.models.notifications.AcceptedFriendRequestNotification;
+import com.models.notifications.FriendRequestNotification;
+import com.models.notifications.Notification;
 import com.models.others.ListObject;
 import com.services.HibernateUtility;
 
@@ -65,15 +68,17 @@ public class UserController {
 		Profile friend = getUser(friendId) ;
 		if (searchArray(user.getFriends(), friend) != -1 || searchArray(user.getPendingRequests(), friend) != -1 || searchArray(user.getRequestedto(), friend) != -1 )
 			return ;
+		
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		(user.getRequestedto()).add(friend) ;
 		session.update(user);
+		session.persist(new FriendRequestNotification(new Date(), friend, user)); //Notification
 		session.getTransaction().commit();
-		session.close() ;
+		session.close();
 	}
 	
-	public static int searchArray ( List <Profile> list , Profile o) {
+	public static int searchArray (List <Profile> list , Profile o) {
 		for ( int i = 0 ; i < list.size() ; i++ ) {
 			if ( list.get(i).getUser_Id() == o.getUser_Id())
 				return i ;
@@ -97,22 +102,23 @@ public class UserController {
 	}
 	
 	public static void acceptFriendRequest (int userId , int friendId) {
-		RemoveFriendFromPending (userId,friendId) ;
+		RemoveFriendFromPending (userId, friendId) ;
 		Session session = HibernateUtility.getSessionFactory().openSession();
-		session.beginTransaction() ;
-		Profile user = getUser(userId) ;
-		Profile friend = getUser(friendId) ;
-		(user.getFriends()).add(friend) ;
-		(friend.getFriends()).add(user) ;
+		session.beginTransaction();
+		Profile user = getUser(userId);
+		Profile friend = getUser(friendId);
+		(user.getFriends()).add(friend);
+		(friend.getFriends()).add(user);
 		session.update(user);
 		session.update(friend);
+		session.persist(new AcceptedFriendRequestNotification(new Date(), friend, user)); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 		
 	}
 	
 	public static void rejectFriendRequest ( int userId ,int friendId) {
-		RemoveFriendFromPending (userId,friendId) ;
+		RemoveFriendFromPending (userId, friendId) ;
 	}
 	
 	public static void removeFriend ( int userId , int friendId ) {
@@ -174,14 +180,8 @@ public class UserController {
 	
 	public static List <Area> getAreasWhoOwn ( int userId ) {
 		Profile user = getUser(userId) ;
-		List <Area> areas = user.getAreasWhoOwn() ;
-		List <Area> result = new ArrayList<Area>() ;
-		for ( int i = 0 ; i < areas.size() ; i++ ) {
-			if (areas.get(i).getUsers().size() != 0 )
-				result.add(areas.get(i)) ;
-				
-		}
-		return result;
+		System.out.println("cdscscsdcdsdsdcsdcsd" + user.getAreasWhoOwn().size());
+		return user.getAreasWhoOwn() ;
 	}
 	
 	
@@ -197,31 +197,7 @@ public class UserController {
 		
 	}
 	
-	public static List <Area> getSomeAreas (int userId , int areaId) {
-		Profile user = getUser(userId) ;
-		if ( areaId == -1 ) 
-			return getAreasWhoOwn (userId) ;
-		else {
-			Session session = HibernateUtility.getSessionFactory().openSession();
-			session.beginTransaction() ;
-			Query query = session.createQuery("from Area where area_id > :areaid and User_Id = :userid ");
-			query.setParameter("areaid", areaId );
-			query.setParameter("userid", userId );
-			List <Area> list = query.list();
-			session.getTransaction().commit();
-			session.close() ; 
-			List  <Area>  result = new ArrayList  <Area>  () ;
-			for ( int i = 0 ; i < list.size() ; i++ ) {
-				if (list.get(i).getUsers().size() != 0 )
-					result.add(list.get(i)) ;	
-			}
-			return result;
-		}
-		
-	}
-	
-	public static double areaOfTriangle(double xa,double ya, double xb, double yb, double px, double py)
-	{
+	public static double areaOfTriangle(double xa,double ya, double xb, double yb, double px, double py) {
 	    double side1 = Math.sqrt(Math.pow(Math.abs(ya-yb),2) + Math.pow(Math.abs(xa-xb),2));
 	    double side2 = Math.sqrt(Math.pow(Math.abs(ya-py),2) + Math.pow(Math.abs(xa-px),2));
 	    double side3 = Math.sqrt(Math.pow(Math.abs(yb-py),2) + Math.pow(Math.abs(xb-px),2));
@@ -236,8 +212,7 @@ public class UserController {
 	public static double areaOfRect(double x1, double y1,
 			double x2, double y2,
 			double x3, double y3,
-			double x4, double y4)
-	{
+			double x4, double y4) {
 
 	    double side1 = Math.sqrt(Math.pow(Math.abs(y1-y2),2) + Math.pow(Math.abs(x1-x2),2));
 	    double side2 = Math.sqrt(Math.pow(Math.abs(y2-y3),2) + Math.pow(Math.abs(x2-x3),2));
@@ -252,8 +227,7 @@ public class UserController {
 			double x2, double y2,
 			double x3, double y3,
 			double x4, double y4, 
-			double pointX, double pointY)
-	{   
+			double pointX, double pointY) {   
 
 	    double trinagle1Area = areaOfTriangle(x1, y1, x2, y2, pointX, pointY);
 	    double trinagle2Area = areaOfTriangle(x2, y2, x3, y3, pointX, pointY);
@@ -274,38 +248,14 @@ public class UserController {
 	        return false;
 	}
 	
-	
-	static double Round (double x) {
-		double finalValue = Math.round( x * 1000000.0 ) / 1000000.0;
-		
-		return finalValue ;
-	}
-	
-	static boolean checkPosition(double x,double y,double xleft,double ytop,double xright,double ybottom)
-	{
-		x = Round (x) ;
-		y = Round (y) ;
-		xleft = Round (xleft) ;
-		ytop = Round (ytop) ;
-		xright = Round (xright) ;
-		ybottom = Round (ybottom) ;
-		
-		if(x>=xleft && x<= xright && y<=ytop && y>=ybottom){
-			return true ;
-		}
-		
-		return false ;
-	}
-	
-	
-	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ) {
+	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ,  double lat3 ,double lon3 , double lat4 ,double lon4 ) {
 		Profile profile = getUser(userId) ;
 		List <Profile> friends = profile.getFriends() ;
 		List <Profile> closestFriends = new ArrayList <Profile> () ;
 		for ( int i = 0 ; i < friends.size() ; i++ ) {
 			Location location = getUserLastLocation (friends.get(i).getUser_Id());
 			if (location == null ) continue ;
-			if ( checkPosition (location.getLongitude(),location.getLatitude(),lon1,lat1,lon2,lat2)== true ){
+			if (check(lat1,lon1,lat2,lon2,lat3,lon3,lat4,lon4,location.getLatitude(),location.getLongitude()) == true ){
 				friends.get(i).latitude = location.getLatitude() ;
 				friends.get(i).longitude = location.getLongitude() ;
 				closestFriends.add(friends.get(i)) ;
@@ -451,7 +401,5 @@ public class UserController {
 		session.getTransaction().commit();
 		session.close() ; 
 		return list ;
-	}
-	
-	
+	}	
 }

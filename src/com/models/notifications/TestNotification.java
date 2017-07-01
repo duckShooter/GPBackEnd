@@ -1,4 +1,4 @@
-package com.model.notifications;
+package com.models.notifications;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -8,7 +8,7 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 @Deprecated
-public class TestNotification implements Notification {
+public class TestNotification extends Notification {
 	
 	@Transient //Don't save in database - needed only for firebase request body
 	private String title;
