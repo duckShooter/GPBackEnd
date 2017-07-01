@@ -4,16 +4,19 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.event.Event;
@@ -21,6 +24,8 @@ import com.models.event.EventController;
 import com.models.location.Area;
 import com.models.location.Location;
 import com.models.location.LocationController;
+import com.models.notifications.Notification;
+import com.models.notifications.NotificationController;
 import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
@@ -67,7 +72,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String createEvent(@FormParam("name")String name , @FormParam("description")String description , @FormParam("radius") double radius 
 			, @FormParam("userid") int userId ,@FormParam("dateofevent") String dateOfEvent ,  @FormParam("deadline") String deadline 
-		    ,@FormParam("locationid") int locationId , @FormParam("img") String image   ) {
+		    ,@FormParam("locationid") int locationId , @FormParam("img") String image) {
 		Event event = EventController.createEvent ( name ,  description ,  radius 
 				,  userId ,  dateOfEvent ,   deadline ,  locationId , image ) ; 
 		ObjectMapper mapper = JsonFactory.create();
@@ -320,10 +325,11 @@ public class Services {
 	@Path("/updateuserlocation")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updateUserLocation  (@FormParam("userid")int userId ,@FormParam("lat")double latitude ,@FormParam("lon")double longitude ) {
-		UserController.updateLocation(userId, latitude, longitude); ;
+		UserController.updateLocation(userId, latitude, longitude);
+		
 		JSONObject obj = new JSONObject();
-		obj.put("operation", "Done")	;	
-		return obj.toJSONString() ;
+		obj.put("operation", "Done");
+		return obj.toJSONString();
 	}
 	
 	@POST
@@ -384,17 +390,14 @@ public class Services {
 		return json.toJSONString();
 	}
 
-	
 	@POST
 	@Path("/addsuggestion")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addSuggestion (@FormParam("userid")int userId ,@FormParam("eventid")int eventId ,@FormParam("date")String date ) {
-		
 		JSONObject json = new JSONObject();
 		json.put("operation", EventController.addSuggestion(userId, eventId, date));
 		return json.toJSONString();
 	}
-	
 	
 	@GET
 	@Path("/add")
@@ -406,9 +409,6 @@ public class Services {
 		return json.toJSONString();
 	}
 	
-	
-	
-	
 	@POST
 	@Path("/acceptsuggestion")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -418,7 +418,6 @@ public class Services {
 		json.put("operation", EventController.acceptSuggestion(userId, eventId, suggestionId));
 		return json.toJSONString();
 	}
-	
 	
 	@POST
 	@Path("/rejectsuggestion")
@@ -430,7 +429,6 @@ public class Services {
 		return json.toJSONString();
 	}
 	
-	
 	@POST
 	@Path("/getsuggestions")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -439,7 +437,6 @@ public class Services {
 		String jsonString = mapper.toJson(EventController.getSuggestions(eventId));
 		return jsonString ;
 	}
-	
 	
 	@POST
 	@Path("/gettimestamp")
@@ -496,7 +493,6 @@ public class Services {
 	@Path("/updateplaces")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String register(@FormParam("userid") int userId ,@FormParam("areaid") int areaId) {
-		
 		ObjectMapper mapper = JsonFactory.create();
 		String jsonString = mapper.toJson(UserController.getGreaterAreas(userId, areaId));
 		return jsonString ;
@@ -512,23 +508,35 @@ public class Services {
 		return jsonString ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@GET
-	@Path("/recentnotifications")
+	@Path("/notifications")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String recentNotifications() {
-		return null;
-	}
-	
-	@GET
-	@Path("/batchnotifications")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String batchNotifications() {
-		return null;
+	public String loadNotifications(@QueryParam("user_id") int userId, @QueryParam("age") byte ageBit,
+			@DefaultValue("-1") @QueryParam("notification_id") int notificationId) {
+		JSONObject responseEntity = new JSONObject();
+		JSONArray notifications = new JSONArray();
+		if(notificationId == -1) {
+			for(Notification n  : NotificationController.fetchLastN(userId,  10))
+				notifications.add(n.toJsonObject());
+		} else {
+			if(ageBit == 1) { //Request for notifications newer than the specified notification ID
+				for(Notification n  : NotificationController.fetchAllUntil(userId, notificationId))
+					notifications.add(n.toJsonObject());
+				
+			} else { //Request for notifications older than the specified notification ID
+				for(Notification n :  NotificationController.fetchNFrom(userId, notificationId, 10))
+					notifications.add(n.toJsonObject());
+			}
+		}
+		responseEntity.put("notifications", notifications);
+		return responseEntity.toJSONString();
 	}
 	
 	@POST
-	@Path("markread")
-	public Response markAsRead(@FormParam("notification_id") String notId) {
-		return null;
+	@Path("/markread")
+	public Response markAsRead(@FormParam("notification_id") int notificationId) {
+		NotificationController.markAsRead(notificationId);
+		return Response.ok().build();
 	}
 }

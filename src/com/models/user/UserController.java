@@ -22,6 +22,7 @@ import com.models.location.LocationController;
 import com.models.notifications.AcceptedFriendRequestNotification;
 import com.models.notifications.FriendRequestNotification;
 import com.models.notifications.Notification;
+import com.models.notifications.NotificationController;
 import com.models.others.ListObject;
 import com.services.HibernateUtility;
 
@@ -111,7 +112,7 @@ public class UserController {
 		(friend.getFriends()).add(user);
 		session.update(user);
 		session.update(friend);
-		session.persist(new AcceptedFriendRequestNotification(new Date(), friend, user)); //Notification
+		session.persist(new AcceptedFriendRequestNotification(friend, user)); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 		
@@ -268,6 +269,7 @@ public class UserController {
 		Profile user = getUser(userId) ;
 		Location location = LocationController.getLocation(locationId) ;
 	    Session session = HibernateUtility.getSessionFactory().openSession();
+	    NotificationController.invokeLocationChange(user, location.getLatitude(), location.getLongitude()); //Notification
 		session.beginTransaction() ;
 	    if ( user.getHistory() == null ) {
 	    	History history = new History () ;

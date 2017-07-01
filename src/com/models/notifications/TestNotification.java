@@ -1,10 +1,17 @@
 package com.models.notifications;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import javax.persistence.Transient;
 
+import org.boon.json.JsonFactory;
+import org.boon.json.JsonParser;
+import org.boon.json.ObjectMapper;
 import org.json.simple.JSONObject;
 
 @Deprecated
@@ -38,7 +45,7 @@ public class TestNotification extends Notification {
 		data.put(a, b);
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public String toJsonString() {
 		JSONObject dataPairs = new JSONObject();
@@ -56,7 +63,7 @@ public class TestNotification extends Notification {
 		json.put("priority", "high");
 		json.put("to", "cL-2zBBTWbA:APA91bHvP72TGqdAcurFQPyL75ZAkZs-Qk7I--ilHL5lMUIFCqJ8bI6wuYlxwdgzlAUfssImbLNrbPDp5a1Xgl1HOPM6Gi-CkoLFLR2tpKYvgMq6Yv3c-dmDKVMsk_98acM7bbFbMwqu");
 		return json.toJSONString();
-	}
+	} */
 	
 	//Local Testing
 	public static void main(String[] args) {
@@ -79,6 +86,24 @@ public class TestNotification extends Notification {
 		double tempC = 2 * Math.atan2(Math.sqrt(tempA), Math.sqrt(1.0 - tempA));
 		double distance = earthRadius * tempC;						
 		System.out.println("distance: " + distance + " | radius: " + radius + " | the point is " + (distance <= radius ? "inside" : "outside") + " the area."); */
+		//==============================================================
+		
+		/*TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
+		TimeZone tz1 = TimeZone.getTimeZone("Egypt");
+		Date d = new Date();
+		Calendar c = new GregorianCalendar();
+		c.setTimeZone(tz);
+		System.out.println(c.getTimeInMillis());
+		System.out.println(c.get(Calendar.HOUR_OF_DAY));
+		c.setTimeZone(tz1);
+		System.out.println(c.getTimeInMillis());
+		System.out.println(c.get(Calendar.HOUR_OF_DAY)); */
+		
+		//==============================================================
+		
+		//ObjectMapper o = JsonFactory.create();
+		
+		
 	}
 	
 }

@@ -25,6 +25,7 @@ import org.hibernate.annotations.Parameter;
 import com.models.event.Event;
 import com.models.event.Suggestion;
 import com.models.location.Area;
+import com.models.location.AreaProfile;
 
 @Entity
 public class Profile {
@@ -74,9 +75,14 @@ public class Profile {
 	@OneToMany (mappedBy = "owner")
     private List <Area> areasWhoOwn = new ArrayList<Area> () ;
 	
-	@JsonIgnore
+	/*@JsonIgnore
 	@ManyToMany(mappedBy = "users")
-	private List <Area> areas = new ArrayList<Area> () ;
+	private List <Area> areas = new ArrayList<Area> () ;*/
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "profile")
+	private List <AreaProfile> areas = new ArrayList <AreaProfile> () ;
+	
 
 	@JsonIgnore
 	@OneToOne (cascade = CascadeType.ALL)
@@ -210,12 +216,12 @@ public class Profile {
 	}
 
 	@JsonIgnore
-	public List<Area> getAreas() {
+	public List<AreaProfile> getAreas() {
 		return areas;
 	}
 
 	@JsonIgnore
-	public void setAreas(List<Area> areas) {
+	public void setAreas(List<AreaProfile> areas) {
 		this.areas = areas;
 	}
 
