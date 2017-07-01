@@ -85,6 +85,10 @@ public class EventController {
 		for ( int i = 0 ; i < events.size() ; i++ ) {
 			Timestamp time = Timestamp.valueOf(events.get(i).getDeadline().replace("T", " ")) ;
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			if (timestamp.getHours()+6 > 24 )
+				timestamp.setHours((timestamp.getHours()+6)-24);
+			else 
+				timestamp.setHours(timestamp.getHours()+6);
 			if (time.after(timestamp)) { 
 				events.get(i).eventState = 1 ;
 				unfinished.add(events.get(i)) ;
