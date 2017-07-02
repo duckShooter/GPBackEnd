@@ -324,9 +324,9 @@ public class Services {
 	@POST
 	@Path("/updateuserlocation")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String updateUserLocation  (@FormParam("userid")int userId ,@FormParam("lat")double latitude ,@FormParam("lon")double longitude ) {
+	public String updateUserLocation(@FormParam("userid")int userId ,@FormParam("lat")double latitude ,@FormParam("lon")double longitude ) {
+		System.out.println("USER ID IS 11: " + userId);
 		UserController.updateLocation(userId, latitude, longitude);
-		
 		JSONObject obj = new JSONObject();
 		obj.put("operation", "Done");
 		return obj.toJSONString();
@@ -551,12 +551,4 @@ public class Services {
 		NotificationController.markAsRead(notificationId);
 		return Response.ok().build();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }

@@ -49,10 +49,11 @@ public class AcceptedFriendRequestNotification extends Notification {
 		target.put("friendState", UserController.getUserDetails(
 				this.owner.getUser_Id(), acceptorProfile.getUser_Id()).friendShipStatus);
 		
+		jsonString.put("id", id);
 		jsonString.put("owner_id", owner.getUser_Id());
 		jsonString.put("target", target);
-		jsonString.put("type", NotificationType.ACCEPTED_FRIEND_REQUEST);
-		jsonString.put("timestamp", timestamp);
+		jsonString.put("type", NotificationType.ACCEPTED_FRIEND_REQUEST.toString());
+		jsonString.put("timestamp", timestamp.getTime());
 		jsonString.put("read", marked);
 		return jsonString;
 	}

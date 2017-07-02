@@ -16,7 +16,7 @@ public class NotificationController {
 	public static List<Notification> fetchUnread(int userID) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		List notifications = 
-				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.id = :owner_id AND n.marked = false")
+				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.user_Id = :owner_id AND n.marked = false")
 		.setParameter("owner_id", userID).list();
 		session.close();
 		return notifications;
@@ -26,7 +26,7 @@ public class NotificationController {
 	public static List<Notification> fetchLastN(int userID, int limit) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		List notifications = 
-				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.id = :owner_id order by n.id desc")
+				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.user_Id = :owner_id order by n.id desc")
 		.setParameter("owner_id", userID).setMaxResults(limit).list();
 		session.close();
 		if(notifications == null)
@@ -38,7 +38,7 @@ public class NotificationController {
 	public static List<Notification> fetchAllUntil(int userID, int notificationID) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		List notifications = 
-				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.id = :owner_id AND n.id > :notid")
+				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.user_Id = :owner_id AND n.id > :notid")
 		.setParameter("owner_id", userID).setParameter("notid", notificationID).list();
 		session.close();
 		if(notifications == null)
@@ -50,7 +50,7 @@ public class NotificationController {
 	public static List<Notification> fetchNFrom(int userID, int notificationID, int limit) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		List notifications = 
-				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.id = :owner_id AND n.id < :notid")
+				(List<Notification>)session.createQuery("FROM Notification n WHERE n.owner.user_Id = :owner_id AND n.id < :notid")
 		.setParameter("owner_id", userID).setParameter("notid", notificationID).setMaxResults(limit).list();
 		session.close();
 		if(notifications == null)
@@ -71,7 +71,8 @@ public class NotificationController {
 	@SuppressWarnings("unchecked")
 	public static void invokeLocationChange(Profile user, double lat, double lon) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
-		List<AreaProfile> areas = (List<AreaProfile>)session.createQuery("FROM AreaProfile ap WHERE ap.profile.user_id = :user_id")
+		System.out.println("USER ID IS: " + user.getUser_Id());
+		List<AreaProfile> areas = (List<AreaProfile>)session.createQuery("FROM AreaProfile ap WHERE ap.profile.user_Id = :user_id")
 				.setParameter("user_id", user.getUser_Id()).list();
 		
 		/* List<Event> events = (List<Event>)session.createQuery("From Event e JOIN e.users u WHERE u.user_id = :user_id")

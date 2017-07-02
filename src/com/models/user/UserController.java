@@ -177,8 +177,6 @@ public class UserController {
 		return list;
 	}
 	
-	
-	
 	public static List <Area> getAreasWhoOwn ( int userId ) {
 		Profile user = getUser(userId) ;
 		List <Area> areas = user.getAreasWhoOwn() ;
@@ -190,7 +188,6 @@ public class UserController {
 		}
 		return result;
 	}
-	
 	
 	public static List <Area> getGreaterAreas (int userId , int areaId) {
 		List <Area> areas = getAreasWhoOwn (userId) ;
@@ -401,6 +398,7 @@ public class UserController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static JSONObject checkRegiseration (long loginId , String provider) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;

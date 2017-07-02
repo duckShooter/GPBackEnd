@@ -10,7 +10,6 @@ import com.models.location.Area;
 import com.models.location.AreaProfile;
 import com.models.notifications.Notification;
 import com.models.user.Profile;
-import com.models.user.UserController;
 
 public class AreaEnteredNotification extends Notification {
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
@@ -59,8 +58,9 @@ public class AreaEnteredNotification extends Notification {
 		areaLocation.put("longitude", area.getLocation().getLongitude());
 
 		JSONArray areaUsers = new JSONArray();
-		JSONObject tempUser = new JSONObject();
+		JSONObject tempUser;
 		for(AreaProfile p : area.getUsers()) {
+			tempUser = new JSONObject();
 			tempUser.put("id", p.getProfile().getUser_Id());
 			tempUser.put("firstName", p.getProfile().getFirstName());
 			tempUser.put("lastName", p.getProfile().getLastName());
@@ -78,10 +78,11 @@ public class AreaEnteredNotification extends Notification {
 		target.put("location", areaLocation);
 		target.put("users", areaUsers);
 		
+		jsonString.put("id", id);
 		jsonString.put("owner_id", owner.getUser_Id());
 		jsonString.put("target", target);
-		jsonString.put("type", NotificationType.AREA_ENTERED);
-		jsonString.put("timestamp", timestamp);
+		jsonString.put("type", NotificationType.AREA_ENTERED.toString());
+		jsonString.put("timestamp", timestamp.getTime());
 		jsonString.put("read", marked);
 		return jsonString;
 	}

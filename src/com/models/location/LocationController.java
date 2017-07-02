@@ -1,18 +1,13 @@
 package com.models.location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import org.boon.json.JsonFactory;
-import org.boon.json.ObjectMapper;
 import org.hibernate.Session;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
 import com.services.HibernateUtility;
@@ -76,17 +71,10 @@ public class LocationController {
 	public static void addUserToArae ( int userId , int areaId ) {
 		Area area = getArae(areaId) ;
 		Profile user = UserController.getUser(userId) ;
-<<<<<<< HEAD
 		AreaProfile obj = new AreaProfile () ;
 		obj.setArea(area);
 		obj.setProfile(user);
 		obj.setInArea(true);
-=======
-		area_profile obj = new area_profile () ;
-		obj.setArea(area);
-		obj.setProfile(user);
-		obj.setState(true);
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 		(area.getUsers()).add(obj);
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
@@ -97,26 +85,19 @@ public class LocationController {
 	
 	public static List <Profile> getAreaUsers (int areaId) {
 		Area area = getArae(areaId) ;
-<<<<<<< HEAD
-		List <AreaProfile> area_profiles = area.getUsers() ;
-=======
-		List <area_profile> area_profiles = area.getUsers() ;
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
+		List <AreaProfile> AreaProfiles = area.getUsers() ;
 		List <Profile> users = new ArrayList <Profile> () ;
-		for ( int i = 0 ; i < area_profiles.size() ; i++ ) {
-			users.add(area_profiles.get(i).getProfile());
+		for ( int i = 0 ; i < AreaProfiles.size() ; i++ ) {
+			users.add(AreaProfiles.get(i).getProfile());
 		}
 		return users ;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static JSONArray getAreaUsersIdAndLocation (int areaId) {
 		Area area = getArae(areaId) ;
 		List <String> returnvalue = new ArrayList <String> () ;
-<<<<<<< HEAD
 		List <AreaProfile> users = area.getUsers() ;
-=======
-		List <area_profile> users = area.getUsers() ;
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray() ;
 		List <String> result = new ArrayList <String> () ;
@@ -130,7 +111,6 @@ public class LocationController {
 			obj.put("time", entry.getKey()) ;
 			array.add(obj);	
 		}
-		
 		return array;
 	}
 	

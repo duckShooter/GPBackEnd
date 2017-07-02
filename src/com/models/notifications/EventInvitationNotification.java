@@ -1,8 +1,8 @@
 package com.models.notifications;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.json.simple.JSONObject;
@@ -14,7 +14,7 @@ import com.models.user.Profile;
 @Entity
 public class EventInvitationNotification extends Notification {
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
-	@Column(name = "event_id")
+	@JoinColumn(name = "event_id")
 	private Event event;
 	
 	public EventInvitationNotification() {
@@ -61,6 +61,7 @@ public class EventInvitationNotification extends Notification {
 		target.put("eventStatus", EventController.userStatusForEvent(owner, event.getEvent_id()));
 		target.put("eventState", EventController.stateOfEvent(event));
 		
+		jsonString.put("id", id);
 		jsonString.put("owner_id", owner.getUser_Id());
 		jsonString.put("target", target);
 		jsonString.put("type", NotificationType.EVENT_INVITATION);

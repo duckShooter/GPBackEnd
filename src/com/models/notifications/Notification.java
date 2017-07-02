@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -22,7 +23,7 @@ import com.models.user.Profile;
 public abstract class Notification {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	protected int id;
 	
 	@Temporal(TemporalType.TIMESTAMP)

@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.json.simple.JSONObject;
+
 import com.models.event.Event;
 import com.models.user.Profile;
 
@@ -41,5 +43,11 @@ public class EventArrivalNotification extends Notification {
 
 	public void setArrivedUser(Profile arrivedUser) {
 		this.arrivedUser = arrivedUser;
+	}
+	
+	@Override
+	public JSONObject toJsonObject() {
+		// TODO Commit Suicide
+		return super.toJsonObject();
 	}
 }

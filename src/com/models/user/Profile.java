@@ -25,11 +25,7 @@ import org.hibernate.annotations.Parameter;
 import com.models.event.Event;
 import com.models.event.Suggestion;
 import com.models.location.Area;
-<<<<<<< HEAD
 import com.models.location.AreaProfile;
-=======
-import com.models.location.area_profile;
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 
 @Entity
 public class Profile {
@@ -85,11 +81,7 @@ public class Profile {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "profile")
-<<<<<<< HEAD
 	private List <AreaProfile> areas = new ArrayList <AreaProfile> () ;
-=======
-	private List <area_profile> areas = new ArrayList <area_profile> () ;
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 	
 
 	@JsonIgnore
@@ -224,20 +216,12 @@ public class Profile {
 	}
 
 	@JsonIgnore
-<<<<<<< HEAD
 	public List<AreaProfile> getAreas() {
-=======
-	public List<area_profile> getAreas() {
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 		return areas;
 	}
 
 	@JsonIgnore
-<<<<<<< HEAD
 	public void setAreas(List<AreaProfile> areas) {
-=======
-	public void setAreas(List<area_profile> areas) {
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 		this.areas = areas;
 	}
 

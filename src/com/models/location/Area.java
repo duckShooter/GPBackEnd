@@ -40,11 +40,7 @@ public class Area {
 	private List <Profile> users = new ArrayList <Profile> () ;*/
 	
 	@OneToMany(mappedBy = "area",cascade = CascadeType.ALL)
-<<<<<<< HEAD
-	private List <AreaProfile> users = new ArrayList <AreaProfile> () ;
-=======
-	private List <area_profile> users = new ArrayList <area_profile> () ;
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
+	private List <AreaProfile> users = new ArrayList <AreaProfile>();
 	
 	@ManyToOne
 	@JoinColumn(name = "location_id", nullable = false)
@@ -76,19 +72,11 @@ public class Area {
 		this.owner = owner;
 	}
 	
-<<<<<<< HEAD
 	public List<AreaProfile> getUsers() {
 		return users;
 	}
 	
 	public void setUsers(List<AreaProfile> users) {
-=======
-	public List<area_profile> getUsers() {
-		return users;
-	}
-	
-	public void setUsers(List<area_profile> users) {
->>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
 		this.users = users;
 	}
 	

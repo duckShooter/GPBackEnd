@@ -81,10 +81,11 @@ public class EventEditingNotification extends Notification {
 		target.put("eventStatus", EventController.userStatusForEvent(owner, event.getEvent_id()));
 		target.put("eventState", EventController.stateOfEvent(event));
 		
+		jsonString.put("id", id);
 		jsonString.put("owner_id", owner.getUser_Id());
 		jsonString.put("target", target);
-		jsonString.put("type", NotificationType.EVENT_EDITING);
-		jsonString.put("timestamp", timestamp);
+		jsonString.put("type", NotificationType.EVENT_EDITING.toString());
+		jsonString.put("timestamp", timestamp.getTime());;
 		jsonString.put("read", marked);
 		return jsonString;
 	}
