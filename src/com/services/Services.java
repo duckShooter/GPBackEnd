@@ -2,7 +2,6 @@ package com.services;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -26,10 +25,8 @@ import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.notifications.Notification;
 import com.models.notifications.NotificationController;
-import com.models.others.ListObject;
 import com.models.user.Profile;
 import com.models.user.UserController;
-import com.sun.jna.platform.win32.Sspi.TimeStamp;
 
 @Path("/")
 public class Services {
@@ -132,6 +129,7 @@ public class Services {
 		return jsonString ;	
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/addusertoarea")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -152,6 +150,7 @@ public class Services {
 	  return jsonString ;
 	}*/
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/adduserlocation")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -175,10 +174,9 @@ public class Services {
 	@POST
 	@Path("/getfriendsonmap")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getFriendsOnMap (@FormParam("userid")int userId , @FormParam("lat1")double lat1  ,@FormParam("lon1") double lon1 ,@FormParam("lat2")double lat2,@FormParam("lon2") double lon2 ,
-			@FormParam("lat3") double lat3 ,@FormParam("lon3") double lon3 ,@FormParam("lat4") double lat4 ,@FormParam("lon4") double lon4)  {
+	public String getFriendsOnMap (@FormParam("userid")int userId , @FormParam("lat1")double lat1  ,@FormParam("lon1") double lon1 ,@FormParam("lat2")double lat2,@FormParam("lon2") double lon2 )  {
 		ObjectMapper mapper = JsonFactory.create();
-		String jsonString = mapper.toJson(UserController.getFriendsOnMap(userId,lat1 ,lon1,lat2, lon2, lat3 ,lon3, lat4,lon4));
+		String jsonString = mapper.toJson(UserController.getFriendsOnMap(userId,lat1 ,lon1,lat2, lon2));
 		return jsonString ;
 	}
 	
@@ -263,16 +261,17 @@ public class Services {
 		return jsonString ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/getareauserswithlocation")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getAreaUsersWithLocation (@FormParam("areaid")int areaId ,@FormParam("userid")int userId , @FormParam("pass")String password ) {
-		ObjectMapper mapper = JsonFactory.create();
 		JSONObject obj = new JSONObject();
 		obj.put("object", LocationController.getAreaUsersIdAndLocation(areaId))	;	
 		return obj.toJSONString() ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/acceptfriendrequest")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -283,6 +282,7 @@ public class Services {
 		return obj.toJSONString() ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/rejectfriendrequest")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -311,6 +311,7 @@ public class Services {
 		return jsonString ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/removefriend")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -321,17 +322,18 @@ public class Services {
 		return obj.toJSONString() ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/updateuserlocation")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updateUserLocation(@FormParam("userid")int userId ,@FormParam("lat")double latitude ,@FormParam("lon")double longitude ) {
-		System.out.println("USER ID IS 11: " + userId);
 		UserController.updateLocation(userId, latitude, longitude);
 		JSONObject obj = new JSONObject();
 		obj.put("operation", "Done");
 		return obj.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/sendinvitation")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -342,6 +344,7 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/accepteventinvitation")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -352,6 +355,7 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/rejecteventinvitation")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -380,6 +384,7 @@ public class Services {
 		return jsonString ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/deleteevent")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -390,6 +395,7 @@ public class Services {
 		return json.toJSONString();
 	}
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/addsuggestion")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -399,6 +405,7 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@GET
 	@Path("/add")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -409,6 +416,7 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/acceptsuggestion")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -419,6 +427,7 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/rejectsuggestion")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -438,6 +447,7 @@ public class Services {
 		return jsonString ;
 	}
 	
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	@POST
 	@Path("/gettimestamp")
 	@Produces(MediaType.TEXT_PLAIN)

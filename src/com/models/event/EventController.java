@@ -4,12 +4,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.models.location.Location;
 import com.models.location.LocationController;
-import com.models.notifications.EventDeletionNotification;
 import com.models.notifications.EventInvitationNotification;
 import com.models.notifications.NotificationController;
 import com.models.user.Profile;
@@ -83,6 +81,7 @@ public class EventController {
 		return events ;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static List <Event> getUnfinishedEvents (List <Event> events ) {
 		
 		List <Event> unfinished = new ArrayList<Event>();

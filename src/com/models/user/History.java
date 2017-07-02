@@ -2,7 +2,6 @@ package com.models.user;
 
 import com.models.location.Location;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 

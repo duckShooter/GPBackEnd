@@ -1,15 +1,12 @@
 package com.models.event;
 
 import com.models.location.Area;
-import com.models.location.Location;
 import com.models.user.Profile;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

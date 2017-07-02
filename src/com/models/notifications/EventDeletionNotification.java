@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 
 import org.json.simple.JSONObject;
 
-import com.models.event.EventController;
 import com.models.user.Profile;
 
 @Entity

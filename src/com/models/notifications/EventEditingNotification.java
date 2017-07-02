@@ -14,11 +14,11 @@ import com.models.user.Profile;
 
 @Entity
 public class EventEditingNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "event_id")
 	private Event event;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "suggestion_id")
 	private Suggestion suggestion;
 	

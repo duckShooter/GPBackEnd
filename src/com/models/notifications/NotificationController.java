@@ -72,8 +72,9 @@ public class NotificationController {
 	public static void invokeLocationChange(Profile user, double lat, double lon) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		System.out.println("USER ID IS: " + user.getUser_Id());
+		int userid = user.getUser_Id();
 		List<AreaProfile> areas = (List<AreaProfile>)session.createQuery("FROM AreaProfile ap WHERE ap.profile.user_Id = :user_id")
-				.setParameter("user_id", user.getUser_Id()).list();
+				.setParameter("user_id", userid).list();
 		
 		/* List<Event> events = (List<Event>)session.createQuery("From Event e JOIN e.users u WHERE u.user_id = :user_id")
 				.setParameter("user_id", user.getUser_Id()).list(); */
@@ -83,9 +84,11 @@ public class NotificationController {
 			if(ap.getArea().containsLocation(lat, lon) && !ap.isInArea()) {
 				session.persist(new AreaEnteredNotification(ap.getArea().getOwner(), ap.getArea(), user));
 				ap.setInArea(true);
+				session.update(ap);
 			} else if(!ap.getArea().containsLocation(lat, lon) && ap.isInArea()) {
 				session.persist(new AreaLeftNotification(ap.getArea().getOwner(), ap.getArea(), user));
 				ap.setInArea(false);
+				session.update(ap);
 			}
 		}
 		session.getTransaction().commit();

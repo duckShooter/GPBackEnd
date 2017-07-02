@@ -1,5 +1,6 @@
 package com.models.notifications;
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -11,12 +12,13 @@ import com.models.location.AreaProfile;
 import com.models.notifications.Notification;
 import com.models.user.Profile;
 
+@Entity
 public class AreaEnteredNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "area_id")
 	private Area area;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "target_id")
 	private Profile target;
 	

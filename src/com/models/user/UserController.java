@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.event.Event;
@@ -21,7 +20,6 @@ import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.notifications.AcceptedFriendRequestNotification;
 import com.models.notifications.FriendRequestNotification;
-import com.models.notifications.Notification;
 import com.models.notifications.NotificationController;
 import com.models.others.ListObject;
 import com.services.HibernateUtility;
@@ -191,7 +189,7 @@ public class UserController {
 	
 	public static List <Area> getGreaterAreas (int userId , int areaId) {
 		List <Area> areas = getAreasWhoOwn (userId) ;
-		List <Area> result = new <Area> ArrayList () ;
+		List <Area> result = new ArrayList<Area>() ;
 		for ( int i = 0 ;  i< areas.size() ; i++ ) {
 			if (areas.get(i).getArea_id() > areaId) {
 				result.add(areas.get(i)) ;
@@ -203,8 +201,8 @@ public class UserController {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	public static List <Area> getSomeAreas (int userId , int areaId) {
-		Profile user = getUser(userId) ;
 		if ( areaId == -1 ) 
 			return getAreasWhoOwn (userId) ;
 		else {
@@ -279,14 +277,37 @@ public class UserController {
 	        return false;
 	}
 	
-	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ,  double lat3 ,double lon3 , double lat4 ,double lon4 ) {
+	static double Round (double x) {
+		double finalValue = Math.round( x * 1000000.0 ) / 1000000.0;
+		
+		return finalValue ;
+	}
+	
+	static boolean checkPosition(double x,double y,double xleft,double ytop,double xright,double ybottom)
+	{
+		x = Round (x) ;
+		y = Round (y) ;
+		xleft = Round (xleft) ;
+		ytop = Round (ytop) ;
+		xright = Round (xright) ;
+		ybottom = Round (ybottom) ;
+		
+		if(x>=xleft && x<= xright && y<=ytop && y>=ybottom){
+			return true ;
+		}
+		
+		return false ;
+	}
+	
+	
+	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ) {
 		Profile profile = getUser(userId) ;
 		List <Profile> friends = profile.getFriends() ;
 		List <Profile> closestFriends = new ArrayList <Profile> () ;
 		for ( int i = 0 ; i < friends.size() ; i++ ) {
 			Location location = getUserLastLocation (friends.get(i).getUser_Id());
 			if (location == null ) continue ;
-			if (check(lat1,lon1,lat2,lon2,lat3,lon3,lat4,lon4,location.getLatitude(),location.getLongitude()) == true ){
+			if ( checkPosition (location.getLongitude(),location.getLatitude(),lon1,lat1,lon2,lat2)== true ){
 				friends.get(i).latitude = location.getLatitude() ;
 				friends.get(i).longitude = location.getLongitude() ;
 				closestFriends.add(friends.get(i)) ;
@@ -294,6 +315,7 @@ public class UserController {
 		}
 		return closestFriends ;
 	}
+	
 	
 	public static void addUserLocation (int userId , int locationId , String time) {
 		Profile user = getUser(userId) ;
@@ -322,7 +344,6 @@ public class UserController {
 		if (user.getHistory() == null ) return null ;
 		Map <String,Location> map = user.getHistory().getPositions() ;
 		Entry<String, Location> entry=map.entrySet().iterator().next();
-		String time = entry.getKey() ;
 		Location location = entry.getValue() ;
 		return location ;
 	}
@@ -398,7 +419,7 @@ public class UserController {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static JSONObject checkRegiseration (long loginId , String provider) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
@@ -409,7 +430,6 @@ public class UserController {
 		session.getTransaction().commit();
 		 session.close() ;
 		 JSONObject obj = new JSONObject();
-		 String isRegisterd ;
 		 if (list.size() == 0 ) { 
 			 obj.put("isRegisterd","1") ;
 			 return obj ;
@@ -425,6 +445,7 @@ public class UserController {
 	}
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List <Profile> searchByName (String name) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
