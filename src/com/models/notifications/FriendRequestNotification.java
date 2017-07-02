@@ -14,7 +14,7 @@ import com.models.user.UserController;
 
 @Entity
 public class FriendRequestNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "sender_id")
 	private Profile senderProfile;
 

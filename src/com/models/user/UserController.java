@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.event.Event;
@@ -21,7 +20,6 @@ import com.models.location.Location;
 import com.models.location.LocationController;
 import com.models.notifications.AcceptedFriendRequestNotification;
 import com.models.notifications.FriendRequestNotification;
-import com.models.notifications.Notification;
 import com.models.notifications.NotificationController;
 import com.models.others.ListObject;
 import com.services.HibernateUtility;
@@ -191,7 +189,7 @@ public class UserController {
 	
 	public static List <Area> getGreaterAreas (int userId , int areaId) {
 		List <Area> areas = getAreasWhoOwn (userId) ;
-		List <Area> result = new <Area> ArrayList () ;
+		List <Area> result = new ArrayList<Area>() ;
 		for ( int i = 0 ;  i< areas.size() ; i++ ) {
 			if (areas.get(i).getArea_id() > areaId) {
 				result.add(areas.get(i)) ;
@@ -203,8 +201,8 @@ public class UserController {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	public static List <Area> getSomeAreas (int userId , int areaId) {
-		Profile user = getUser(userId) ;
 		if ( areaId == -1 ) 
 			return getAreasWhoOwn (userId) ;
 		else {
@@ -322,7 +320,6 @@ public class UserController {
 		if (user.getHistory() == null ) return null ;
 		Map <String,Location> map = user.getHistory().getPositions() ;
 		Entry<String, Location> entry=map.entrySet().iterator().next();
-		String time = entry.getKey() ;
 		Location location = entry.getValue() ;
 		return location ;
 	}
@@ -398,7 +395,7 @@ public class UserController {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static JSONObject checkRegiseration (long loginId , String provider) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
@@ -409,7 +406,6 @@ public class UserController {
 		session.getTransaction().commit();
 		 session.close() ;
 		 JSONObject obj = new JSONObject();
-		 String isRegisterd ;
 		 if (list.size() == 0 ) { 
 			 obj.put("isRegisterd","1") ;
 			 return obj ;
@@ -425,6 +421,7 @@ public class UserController {
 	}
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List <Profile> searchByName (String name) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;

@@ -14,11 +14,11 @@ import com.models.user.Profile;
 
 @Entity
 public class AreaLeftNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "area_id")
 	private Area area;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "target_id")
 	private Profile target;
 	

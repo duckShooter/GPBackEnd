@@ -96,11 +96,9 @@ public class LocationController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static JSONArray getAreaUsersIdAndLocation (int areaId) {
 		Area area = getArae(areaId) ;
-		List <String> returnvalue = new ArrayList <String> () ;
 		List <AreaProfile> users = area.getUsers() ;
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray() ;
-		List <String> result = new ArrayList <String> () ;
 		for ( int i = 0 ; i < users.size() ; i++ ) {
 			System.out.println(users.size());
 			Entry entry = UserController.getUserLastLocationAndTime(users.get(i).getProfile().getUser_Id()) ;

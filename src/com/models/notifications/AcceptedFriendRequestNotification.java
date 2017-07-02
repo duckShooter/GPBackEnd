@@ -12,7 +12,7 @@ import com.models.user.UserController;
 
 @Entity
 public class AcceptedFriendRequestNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "acceptor_id")
 	private Profile acceptorProfile;
 	

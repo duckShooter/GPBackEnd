@@ -13,7 +13,7 @@ import com.models.user.Profile;
 
 @Entity
 public class EventInvitationNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "event_id")
 	private Event event;
 	
@@ -64,8 +64,8 @@ public class EventInvitationNotification extends Notification {
 		jsonString.put("id", id);
 		jsonString.put("owner_id", owner.getUser_Id());
 		jsonString.put("target", target);
-		jsonString.put("type", NotificationType.EVENT_INVITATION);
-		jsonString.put("timestamp", timestamp);
+		jsonString.put("type", NotificationType.EVENT_INVITATION.toString());
+		jsonString.put("timestamp", timestamp.getTime());
 		jsonString.put("read", marked);
 		return jsonString;
 	}
