@@ -500,6 +500,18 @@ public class Services {
 	}
 	
 	@POST
+	@Path("/getsomeareas")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getSomeAreas(@FormParam("userid") int userid ,@FormParam("areaid") int areaid  ) {
+		
+		ObjectMapper mapper = JsonFactory.create();
+		String jsonString = mapper.toJson(UserController.getSomeAreas(userid, areaid));
+		return jsonString ;
+
+	}
+	
+	
+	@POST
 	@Path("/searchuserbyname")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String searchUserByName(@FormParam("name") String name ) {
@@ -539,4 +551,12 @@ public class Services {
 		NotificationController.markAsRead(notificationId);
 		return Response.ok().build();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -7,13 +7,13 @@
     <session-factory>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
      
-        <!--  <property name="connection.url">jdbc:mysql://localhost:3306/restapi</property>
+       <!--   <property name="connection.url">jdbc:mysql://localhost:3306/restapi</property>
         <property name="connection.username">root</property>
         <property name="connection.password">root</property> -->
         <property name="hibernate.enable_lazy_load_no_trans">true</property> 
         
         
-        <property name="connection.url">jdbc:mysql://127.8.2.130:3306/restapi</property>
+          <property name="connection.url">jdbc:mysql://127.8.2.130:3306/restapi</property>
         <property name="connection.username">adminvA1HI7Q </property>
         <property name="connection.password">_tGrEtnHwzqG</property>
       
@@ -38,7 +38,11 @@
  		<mapping class="com.models.user.Profile"/>
  		<mapping class="com.models.location.Location"/> 
  		<mapping class="com.models.location.Area"/> 
+<<<<<<< HEAD
  		<mapping class="com.models.location.AreaProfile"/> 
+=======
+ 		<mapping class="com.models.location.area_profile"/> 
+>>>>>>> 65ac2cd2c58c34a9fdd72aac1248f8e58e62f123
  		<mapping class="com.models.event.Event"/> 
  		<mapping class="com.models.user.History"/> 
  		<mapping class="com.models.event.Suggestion"/> 
