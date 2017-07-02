@@ -13,7 +13,4 @@ public class ListObject {
 		super();
 		this.object = object;
 	}
-	
-	
-
 }

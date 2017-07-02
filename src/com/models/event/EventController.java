@@ -9,6 +9,9 @@ import org.hibernate.Session;
 
 import com.models.location.Location;
 import com.models.location.LocationController;
+import com.models.notifications.EventDeletionNotification;
+import com.models.notifications.EventInvitationNotification;
+import com.models.notifications.NotificationController;
 import com.models.user.Profile;
 import com.models.user.UserController;
 import com.services.HibernateUtility;
@@ -64,7 +67,7 @@ public class EventController {
 		
 	}
 	
-	
+	@SuppressWarnings("deprecation")
 	public static List <Event> markEventState (List <Event> events ) {
 		for ( int i = 0 ; i < events.size() ; i++ ) {
 			Timestamp time = Timestamp.valueOf(events.get(i).getDeadline().replace("T", " ")) ;
@@ -118,6 +121,7 @@ public class EventController {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.update(event);
+		session.persist(new EventInvitationNotification(user, event)); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 	}
@@ -211,6 +215,7 @@ public class EventController {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.delete(event);
+		NotificationController.notifyEventDeletion(event); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 		LocationController.deleteArea(event.getArea().getArea_id());
@@ -234,10 +239,7 @@ public class EventController {
 		session.close() ;
 		
 		return "Done" ;
-		
-		
 	}
-	
 	
 	public static int searchSuggestion ( List <Suggestion> suggestions , int id ) {
 		for ( int i = 0 ; i < suggestions.size() ; i++ ) {
@@ -279,6 +281,7 @@ public class EventController {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.update(event);
+		NotificationController.notifyEventEditing(suggestion); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 		
@@ -286,14 +289,13 @@ public class EventController {
 		
 	}
 	
-	
-	
 	public static String acceptSuggestion (int userId , int eventId , int suggestionId ) {
-		if ( updateEventTime(userId , eventId, suggestionId).equals("Failed") ) return "Failed" ;
+		if (updateEventTime(userId , eventId, suggestionId).equals("Failed") ) 
+			return "Failed" ;
 		if (removeSuggestion(userId, eventId, suggestionId).equals("Done")) {
 			return "Done" ;
-		}
-		else return "Failed" ;
+		} else 
+			return "Failed" ;
 	}
 	
 	public static String  rejectSuggestion (int userId , int eventId , int suggestionId ) {
@@ -319,6 +321,28 @@ public class EventController {
 		
 	}
 	
+	public static int userStatusForEvent(Profile user, int eventId) { //Personal
+		if (searchForEvent(user.getEventInvitations(), eventId) != -1)
+			user.eventStatus = 1 ;
+		else if (searchForEvent(user.getEvents(), eventId) != -1)  
+			user.eventStatus = 2 ;
+		else
+			user.eventStatus = 3 ;
+		return user.eventStatus;
+	}
 	
-	
+	@SuppressWarnings("deprecation")
+	public static int stateOfEvent(Event event) { //Personal
+		Timestamp time = Timestamp.valueOf(event.getDeadline().replace("T", " ")) ;
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		if (timestamp.getHours()+6 > 24)
+			timestamp.setHours((timestamp.getHours()+6)-24);
+		else 
+			timestamp.setHours(timestamp.getHours()+6);
+		if (time.after(timestamp)) 
+			event.eventState = 1 ;
+		else 
+			event.eventState = 2 ;
+		return event.eventState;
+	}
 }

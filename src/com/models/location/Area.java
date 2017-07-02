@@ -40,18 +40,18 @@ public class Area {
 	private List <Profile> users = new ArrayList <Profile> () ;*/
 	
 	@OneToMany(mappedBy = "area",cascade = CascadeType.ALL)
-	private List <area_profile> users = new ArrayList <area_profile> () ;
+	private List <AreaProfile> users = new ArrayList <AreaProfile>();
 	
 	@ManyToOne
 	@JoinColumn(name = "location_id", nullable = false)
-	private Location location ;
+	private Location location;
 	
-	private String image ;
-	
+	private String image;
 	
 	public int getArea_id() {
 		return area_id;
 	}
+	
 	public void setArea_id(int area_id) {
 		this.area_id = area_id;
 	}
@@ -59,29 +59,35 @@ public class Area {
 	public double getRedius() {
 		return redius;
 	}
+	
 	public void setRedius(double redius) {
 		this.redius = redius;
 	}
+	
 	public Profile getOwner() {
 		return owner;
 	}
+	
 	public void setOwner(Profile owner) {
 		this.owner = owner;
 	}
 	
-	public List<area_profile> getUsers() {
+	public List<AreaProfile> getUsers() {
 		return users;
 	}
 	
-	public void setUsers(List<area_profile> users) {
+	public void setUsers(List<AreaProfile> users) {
 		this.users = users;
 	}
+	
 	public Location getLocation() {
 		return location;
 	}
+	
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	
 	public String getImage() {
 		return image;
 	}
@@ -91,7 +97,6 @@ public class Area {
 	}
 	
 	public boolean containsLocation(double latitude, double longitude) { //Tested
-		//The following method uses 'Haversine' formula to calculate the spherical distance between two points
 		final double earthRadius = 6371.0 * 1000; //Meters
 		double deltaLat = Math.toRadians(latitude - location.getLatitude()); //Degrees to radians
 		double deltaLon = Math.toRadians(longitude - location.getLongitude());

@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -13,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.json.simple.JSONObject;
+
 import com.models.user.Profile;
 
 @Entity
@@ -20,8 +23,8 @@ import com.models.user.Profile;
 public abstract class Notification {
 	
 	@Id
-	@GeneratedValue
-	protected int notification_id;
+	@GeneratedValue(strategy = GenerationType.TABLE)
+	protected int id;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date timestamp;
@@ -37,17 +40,22 @@ public abstract class Notification {
 		//Empty
 	}
 	
-	public Notification(Date timestamp, Profile owner) {
-		this.timestamp = timestamp;
+	@SuppressWarnings("deprecation")
+	public Notification(Profile owner) {
+		timestamp = new Date();
+		if (this.timestamp.getHours()+6 > 24)
+			this.timestamp.setHours((timestamp.getHours()+6)-24);
+		else 
+			timestamp.setHours(timestamp.getHours()+6);
 		this.owner = owner;
 	}
 	
-	public int getNotification_id() {
-		return notification_id;
+	public int getId() {
+		return id;
 	}
 
-	public void setNotification_id(int notification_id) {
-		this.notification_id = notification_id;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Date getTimestamp() {
@@ -66,7 +74,6 @@ public abstract class Notification {
 		this.marked = marked;
 	}
 	
-	
 	public Profile getOwner() {
 		return owner;
 	}
@@ -75,8 +82,7 @@ public abstract class Notification {
 		this.owner = owner;
 	}
 	
-
-	public String toJsonString() {
+	public JSONObject toJsonObject() {
 		return null;
 	}
 }

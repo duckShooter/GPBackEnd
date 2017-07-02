@@ -36,7 +36,7 @@ public class FirebaseCloudMessaging {
 		HttpPost request = new HttpPost(connectionURL);
 		request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 		request.setHeader(HttpHeaders.AUTHORIZATION, "key="+ apiKey);
-		request.setEntity(new StringEntity(notification.toJsonString()));
+		//request.setEntity(new StringEntity(notification.toJsonString()));
 		System.out.println(new BasicResponseHandler().handleResponse(client.execute(request)));		
 	}
 	

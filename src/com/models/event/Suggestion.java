@@ -1,6 +1,5 @@
 package com.models.event;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -29,37 +28,35 @@ public class Suggestion {
 	
 	String time ;
 	
-	
-	
-	
 	public int getSuggestion_id() {
 		return suggestion_id;
 	}
+	
 	public void setSuggestion_id(int suggestion_id) {
 		this.suggestion_id = suggestion_id;
 	}
+	
 	public Event getEvent() {
 		return event;
 	}
+	
 	public void setEvent(Event event) {
 		this.event = event;
 	}
+	
 	public Profile getProfile() {
 		return profile;
 	}
+	
 	public void setProfile(Profile profile) {
 		this.profile = profile;
 	}
+	
 	public String getTime() {
 		return time;
 	}
+	
 	public void setTime(String time) {
 		this.time = time;
 	}
-	
-	
-	
-	
-	
-	
 }
