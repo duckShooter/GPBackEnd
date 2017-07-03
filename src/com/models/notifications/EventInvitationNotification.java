@@ -50,6 +50,7 @@ public class EventInvitationNotification extends Notification {
 		eventArea.put("radius", event.getArea().getRedius());
 		eventArea.put("area_id", event.getArea().getArea_id());
 		eventArea.put("location", areaLocation);
+		eventArea.put("image",event.getArea().getImage() ) ;
 		
 		JSONObject target = new JSONObject();
 		target.put("event_id", event.getEvent_id());

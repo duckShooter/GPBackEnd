@@ -277,14 +277,37 @@ public class UserController {
 	        return false;
 	}
 	
-	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ,  double lat3 ,double lon3 , double lat4 ,double lon4 ) {
+	static double Round (double x) {
+		double finalValue = Math.round( x * 1000000.0 ) / 1000000.0;
+		
+		return finalValue ;
+	}
+	
+	static boolean checkPosition(double x,double y,double xleft,double ytop,double xright,double ybottom)
+	{
+		x = Round (x) ;
+		y = Round (y) ;
+		xleft = Round (xleft) ;
+		ytop = Round (ytop) ;
+		xright = Round (xright) ;
+		ybottom = Round (ybottom) ;
+		
+		if(x>=xleft && x<= xright && y<=ytop && y>=ybottom){
+			return true ;
+		}
+		
+		return false ;
+	}
+	
+	
+	public static List <Profile> getFriendsOnMap (int userId ,double lat1 ,double lon1 ,double lat2,double lon2 ) {
 		Profile profile = getUser(userId) ;
 		List <Profile> friends = profile.getFriends() ;
 		List <Profile> closestFriends = new ArrayList <Profile> () ;
 		for ( int i = 0 ; i < friends.size() ; i++ ) {
 			Location location = getUserLastLocation (friends.get(i).getUser_Id());
 			if (location == null ) continue ;
-			if (check(lat1,lon1,lat2,lon2,lat3,lon3,lat4,lon4,location.getLatitude(),location.getLongitude()) == true ){
+			if ( checkPosition (location.getLongitude(),location.getLatitude(),lon1,lat1,lon2,lat2)== true ){
 				friends.get(i).latitude = location.getLatitude() ;
 				friends.get(i).longitude = location.getLongitude() ;
 				closestFriends.add(friends.get(i)) ;
@@ -292,6 +315,7 @@ public class UserController {
 		}
 		return closestFriends ;
 	}
+	
 	
 	public static void addUserLocation (int userId , int locationId , String time) {
 		Profile user = getUser(userId) ;

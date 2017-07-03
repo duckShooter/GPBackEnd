@@ -83,6 +83,7 @@ public class EventController {
 	
 	@SuppressWarnings("deprecation")
 	public static List <Event> getUnfinishedEvents (List <Event> events ) {
+		
 		List <Event> unfinished = new ArrayList<Event>();
 		for ( int i = 0 ; i < events.size() ; i++ ) {
 			Timestamp time = Timestamp.valueOf(events.get(i).getDeadline().replace("T", " ")) ;
