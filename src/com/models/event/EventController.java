@@ -279,7 +279,7 @@ public class EventController {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction() ;
 		session.update(event);
-		NotificationController.notifyEventEditing(suggestion); //Notification
+		NotificationController.notifyEventEditing(event); //Notification
 		session.getTransaction().commit();
 		session.close() ;
 		

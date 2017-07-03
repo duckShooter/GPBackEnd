@@ -1,4 +1,4 @@
-package com.models.notifications;
+ package com.models.notifications;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -14,22 +14,17 @@ import com.models.user.Profile;
 
 @Entity
 public class EventEditingNotification extends Notification {
-	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "event_id")
 	private Event event;
-	
-	@ManyToOne(optional = false, cascade = CascadeType.REMOVE)
-	@JoinColumn(name = "suggestion_id")
-	private Suggestion suggestion;
 	
 	public EventEditingNotification() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public EventEditingNotification(Profile owner, Event event, Suggestion suggestion) {
+	public EventEditingNotification(Profile owner, Event event) {
 		super(owner);
 		this.event = event;
-		this.suggestion = suggestion;
 	}
 
 	public Event getEvent() {
@@ -38,14 +33,6 @@ public class EventEditingNotification extends Notification {
 
 	public void setEvent(Event event) {
 		this.event = event;
-	}
-
-	public Suggestion getSuggestion() {
-		return suggestion;
-	}
-
-	public void setSuggestion(Suggestion suggestion) {
-		this.suggestion = suggestion;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -65,16 +52,10 @@ public class EventEditingNotification extends Notification {
 		eventArea.put("area_id", event.getArea().getArea_id());
 		eventArea.put("location", areaLocation);
 		
-		JSONObject eventSuggestion = new JSONObject();
-		eventSuggestion.put("suggestion_id", suggestion.getSuggestion_id());
-		eventSuggestion.put("new_date", suggestion.getTime());
-		
-		
 		JSONObject target = new JSONObject();
 		target.put("event_id", event.getEvent_id());
 		target.put("name", event.getName());
 		target.put("area", eventArea);
-		target.put("suggestion", eventSuggestion);
 		target.put("description", event.getDescription());
 		target.put("dateOfEvent", event.getDateOfEvent());
 		target.put("deadline", event.getDeadline());

@@ -104,11 +104,11 @@ public class NotificationController {
 		session.close();
 	}
 	
-	public static void notifyEventEditing(Suggestion suggestion) {
+	public static void notifyEventEditing(Event event) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction();
-		for(Profile user : suggestion.getEvent().getUsers())
-			session.persist(new EventEditingNotification(user, suggestion.getEvent(), suggestion));
+		for(Profile user : event.getUsers())
+			session.persist(new EventEditingNotification(user, event));
 		session.getTransaction().commit();
 		session.close();
 	}
